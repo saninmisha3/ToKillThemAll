@@ -1,4 +1,4 @@
-// Kill Them All Game, All Rights Reserved
+ // Kill Them All Game, All Rights Reserved
 
 #pragma once
 
@@ -14,4 +14,6 @@ class TOKILLTHEMALL_API AKTAGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 	
+public:
+    AKTAGameModeBase();
 };
