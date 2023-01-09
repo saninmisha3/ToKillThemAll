@@ -12,6 +12,7 @@ public class ToKillThemAll : ModuleRules
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
+		//PublicIncludePath.AddRange(new string[] { "ToKillThemAll/Public/Components" });
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
