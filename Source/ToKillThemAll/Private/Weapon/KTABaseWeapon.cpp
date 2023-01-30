@@ -23,6 +23,7 @@ void AKTABaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
     check(WeaponMesh);
+    CurrentAmmo = DefaultAmmo;
 }
 
 void AKTABaseWeapon::StartFire()
@@ -70,3 +71,38 @@ void AKTABaseWeapon::MakeHit(FHitResult& HitResult, const FVector TraceStart, co
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility,
                                          CollisionParams);
 };
+
+
+void AKTABaseWeapon::DecreaseAmmo()
+{
+    CurrentAmmo.Bullets--;
+    LogAmmo();
+
+    if (IsClipEmpty() && !IsAmmoEmpty())
+    {
+        ChangeClip();
+    }
+}
+bool AKTABaseWeapon::IsAmmoEmpty() const
+{
+    return !CurrentAmmo.Infinite && CurrentAmmo.Clips == 0 && IsClipEmpty();
+}
+bool AKTABaseWeapon::IsClipEmpty() const
+{
+    return CurrentAmmo.Bullets == 0;
+}
+void AKTABaseWeapon::ChangeClip()
+{
+    CurrentAmmo.Bullets = DefaultAmmo.Bullets;
+    if (!CurrentAmmo.Infinite)
+    {
+        CurrentAmmo.Clips--;
+    }
+    UE_LOG(LogBaseWeapon, Display, TEXT("----------- Change Clip --------------"));
+}
+void AKTABaseWeapon::LogAmmo()
+{
+    FString AmmoInfo = "Ammo:" + FString::FromInt(CurrentAmmo.Bullets) + "/";
+    AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
+    UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
+}

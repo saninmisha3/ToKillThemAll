@@ -4,16 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "Animation/KTAAnimNotify.h"
-#include "KTAEquipFinishedAnimNotify.generated.h"
+#include "KTAReloadFinishedAnimNotify.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class TOKILLTHEMALL_API UKTAEquipFinishedAnimNotify : public UKTAAnimNotify
+class TOKILLTHEMALL_API UKTAReloadFinishedAnimNotify : public UKTAAnimNotify
 {
 	GENERATED_BODY()
 	
-
-
 };

@@ -1,9 +1,10 @@
 // Kill Them All Game, All Rights Reserved
 
 #include "Components/KTAWeaponComponent.h"
+#include "Animation/KTAEquipFinishedAnimNotify.h"
 #include "GameFramework/Character.h"
 #include "Weapon/KTABaseWeapon.h"
-#include "Animation/KTAEquipFinishedAnimNotify.h"
+#include "Animation/KTAReloadFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
@@ -19,7 +20,7 @@ UKTAWeaponComponent::UKTAWeaponComponent()
 
 void UKTAWeaponComponent::StartFire()
 {
-    if (!CurrentWeapon)
+    if (!CanFire())
         return;
     CurrentWeapon->StartFire();
 }
@@ -59,9 +60,9 @@ void UKTAWeaponComponent::SpawnWeapons()
     if (!Character || !GetWorld())
         return;
 
-    for (auto WeaponClass : WeaponClasses)
+    for (auto OneWeaponData : WeaponData)
     {
-        auto Weapon = GetWorld()->SpawnActor<AKTABaseWeapon>(WeaponClass);
+        auto Weapon = GetWorld()->SpawnActor<AKTABaseWeapon>(OneWeaponData.WeaponClass);
 
         if (!Weapon)
             continue;
@@ -82,6 +83,8 @@ void UKTAWeaponComponent::AttachWeaponToSocket(AKTABaseWeapon *Weapon, USceneCom
 
 void UKTAWeaponComponent::EquipWeapon(int32 WeaponIndex)
 {
+    if (WeaponIndex < 0 || WeaponIndex > Weapons.Num())
+        return;
     ACharacter *Character = Cast<ACharacter>(GetOwner());
     if (!Character)
         return;
@@ -93,12 +96,23 @@ void UKTAWeaponComponent::EquipWeapon(int32 WeaponIndex)
     }
 
     CurrentWeapon = Weapons[WeaponIndex];
+    // CurrentReloadAnimMontage = WeaponData[WeaponIndex].ReloadAnimMontage;
+    const auto CurrentWeaponData =
+        WeaponData.FindByPredicate([&](const FWeaponData &Data) //
+                                   {
+                                       return Data.WeaponClass == CurrentWeapon->GetClass(); //
+                                   });
+    CurrentReloadAnimMontage = CurrentWeaponData ? CurrentWeaponData->ReloadAnimMontage : nullptr;
+
     AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponEquipSocketName);
+    EquipAnimInProgress = true;
     PlayAnimMontage(EquipAnimMontage);
 }
 
 void UKTAWeaponComponent::NextWeapon()
 {
+    if (!CanEquip())
+        return;
     CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -114,29 +128,61 @@ void UKTAWeaponComponent::PlayAnimMontage(UAnimMontage *Animation)
 
 void UKTAWeaponComponent::InitAnimations()
 {
-    if (!EquipAnimMontage)
-        return;
-    const auto NotifyEvents = EquipAnimMontage->Notifies;
-    for (auto NotifyEvent : NotifyEvents)
+    auto EquipFinishedNotify = FindNotifyByClass<UKTAEquipFinishedAnimNotify>(EquipAnimMontage);
+    if (EquipFinishedNotify)
     {
-        auto EquipFinishedNotify = Cast<UKTAEquipFinishedAnimNotify>(NotifyEvent.Notify);
-        if (EquipFinishedNotify)
-        {
-            EquipFinishedNotify->OnNotified.AddUObject(this, &UKTAWeaponComponent::OnEquipFinished);
-            break;
-        }
+        EquipFinishedNotify->OnNotified.AddUObject(this, &UKTAWeaponComponent::OnEquipFinished);
     }
 
+    for (auto OneWeaponData: WeaponData)
+    {
+        auto ReloadFinishedNotify = FindNotifyByClass<UKTAReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        if (!ReloadFinishedNotify)
+            continue;
+        
+        ReloadFinishedNotify->OnNotified.AddUObject(this, &UKTAWeaponComponent::OnReloadFinished);
+    }
 }
 
 void UKTAWeaponComponent::OnEquipFinished(USkeletalMeshComponent *MeshComponent)
 {
     ACharacter *Character = Cast<ACharacter>(GetOwner());
-    if (!Character)
+    if (!Character || Character->GetMesh() != MeshComponent)
         return;
 
-    if (Character->GetMesh() == MeshComponent)
-    {
-        UE_LOG(LogWeaponComponent, Display, TEXT("Equip finished"));
-    }
+    EquipAnimInProgress = false;
+    // UE_LOG(LogWeaponComponent, Display, TEXT("Equip finished"));
+}
+
+void UKTAWeaponComponent::OnReloadFinished(USkeletalMeshComponent *MeshComponent)
+{
+    ACharacter *Character = Cast<ACharacter>(GetOwner());
+    if (!Character || Character->GetMesh() != MeshComponent)
+        return;
+
+    ReloadAnimInProgress = false;
+    
+}
+
+bool UKTAWeaponComponent::CanFire()
+{
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
+}
+
+bool UKTAWeaponComponent::CanEquip()
+{
+    return !EquipAnimInProgress && !ReloadAnimInProgress;
+}
+
+bool UKTAWeaponComponent::CanReload()
+{
+    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
+}
+
+void UKTAWeaponComponent::Reload()
+{
+    if (!CanReload())
+        return;
+    ReloadAnimInProgress = true;
+    PlayAnimMontage(CurrentReloadAnimMontage);
 }

@@ -8,6 +8,21 @@
 
 class AKTABaseWeapon;
 
+USTRUCT(BlueprintType)
+struct FWeaponData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    TSubclassOf<AKTABaseWeapon> WeaponClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    UAnimMontage *ReloadAnimMontage;
+};
+
+
+
+
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
 {
@@ -21,6 +36,8 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     void StartFire();
     void StopFire();
     void NextWeapon();
+    void Reload();
+
 
 
   protected:
@@ -30,7 +47,7 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
 
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
-    TArray<TSubclassOf<AKTABaseWeapon>> WeaponClasses;
+    TArray<FWeaponData> WeaponData;
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     FName WeaponEquipSocketName = "WeaponSocket";
@@ -48,7 +65,12 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     UPROPERTY()
     TArray<AKTABaseWeapon*> Weapons;
 
+    UPROPERTY()
+    UAnimMontage *CurrentReloadAnimMontage = nullptr;
+
     int32 CurrentWeaponIndex = 0;
+    bool EquipAnimInProgress = false;
+    bool ReloadAnimInProgress = false;
 
     void SpawnWeapons();
     void AttachWeaponToSocket(AKTABaseWeapon *Weapon, USceneComponent *SceneComponent,
@@ -59,5 +81,27 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
 
     void InitAnimations();
     void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
+    void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
 
+    bool CanFire();
+    bool CanEquip();
+    bool CanReload();
+
+    template<typename T> 
+    T *FindNotifyByClass(UAnimSequenceBase* Animation)
+    {
+        if (!Animation)
+            return nullptr;
+        const auto NotifyEvents = Animation->Notifies;
+        for (auto NotifyEvent : NotifyEvents)
+        {
+            auto AnimNotify = Cast<T>(NotifyEvent.Notify);
+            if (AnimNotify)
+            {
+                return AnimNotify;
+            }
+        }
+        return nullptr;
+    
+    }
 };

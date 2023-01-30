@@ -81,6 +81,7 @@ void AKTABaseCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInputCo
     PlayerInputComponent->BindAction("Fire", IE_Pressed, WeaponComponent, &UKTAWeaponComponent::StartFire);
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UKTAWeaponComponent::StopFire);
     PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &UKTAWeaponComponent::NextWeapon);
+    PlayerInputComponent->BindAction("Reload", IE_Released, WeaponComponent, &UKTAWeaponComponent::Reload);
 }
 
 bool AKTABaseCharacter::IsRunning() const

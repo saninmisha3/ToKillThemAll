@@ -13,8 +13,12 @@ void AKTALauncherWeapon::StartFire()
 
 void AKTALauncherWeapon::MakeShot()
 {
-    if (!GetWorld())
+    if (!GetWorld() || IsAmmoEmpty())
+    {
+        StopFire();
         return;
+    }
+        
 
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -43,5 +47,5 @@ void AKTALauncherWeapon::MakeShot()
         Projectile->FinishSpawning(SpawnTranform);
     
     }
-        
+    DecreaseAmmo();
 }

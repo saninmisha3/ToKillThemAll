@@ -22,8 +22,12 @@ void AKTARifleWeapon::StopFire()
 
 void AKTARifleWeapon::MakeShot()
 {
-    if (!GetWorld())
+    if (!GetWorld() || IsAmmoEmpty())
+    {
+        StopFire();
         return;
+    }
+        
 
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -55,7 +59,7 @@ void AKTARifleWeapon::MakeShot()
         DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
     }
 
-
+    DecreaseAmmo();
 }
 
 void AKTARifleWeapon::MakeDamage(const FHitResult &HitResult)
