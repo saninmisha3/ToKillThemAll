@@ -2,12 +2,15 @@
 
 #include "Components/KTAWeaponComponent.h"
 #include "Animation/KTAEquipFinishedAnimNotify.h"
+#include "Animation/KTAReloadFinishedAnimNotify.h"
+#include "Animation/AnimUtils.h"
 #include "GameFramework/Character.h"
 #include "Weapon/KTABaseWeapon.h"
-#include "Animation/KTAReloadFinishedAnimNotify.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
+
+constexpr static int32 WeaponNum = 2;
 // Sets default values for this component's properties
 UKTAWeaponComponent::UKTAWeaponComponent()
 {
@@ -36,9 +39,11 @@ void UKTAWeaponComponent::StopFire()
 void UKTAWeaponComponent::BeginPlay()
 {
     Super::BeginPlay();
-    CurrentWeaponIndex = 0;
+
+    checkf(WeaponData.Num() == WeaponNum, TEXT("Our character can hpld only %i weapon item"), WeaponNum);
 
     InitAnimations();
+    CurrentWeaponIndex = 0;
     SpawnWeapons();
     EquipWeapon(CurrentWeaponIndex);
 }
@@ -67,6 +72,7 @@ void UKTAWeaponComponent::SpawnWeapons()
         if (!Weapon)
             continue;
 
+        Weapon->OnClipEmpty.AddUObject(this, &UKTAWeaponComponent::OnEmptyClip);
         Weapon->SetOwner(Character);
         Weapons.Add(Weapon);
 
@@ -128,18 +134,27 @@ void UKTAWeaponComponent::PlayAnimMontage(UAnimMontage *Animation)
 
 void UKTAWeaponComponent::InitAnimations()
 {
-    auto EquipFinishedNotify = FindNotifyByClass<UKTAEquipFinishedAnimNotify>(EquipAnimMontage);
+    auto EquipFinishedNotify = AnimUtils::FindNotifyByClass<UKTAEquipFinishedAnimNotify>(EquipAnimMontage);
     if (EquipFinishedNotify)
     {
         EquipFinishedNotify->OnNotified.AddUObject(this, &UKTAWeaponComponent::OnEquipFinished);
     }
-
-    for (auto OneWeaponData: WeaponData)
+    else
     {
-        auto ReloadFinishedNotify = FindNotifyByClass<UKTAReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
+        UE_LOG(LogWeaponComponent, Error, TEXT("Equip anim notify is fogotten to set"));
+        checkNoEntry();
+    }
+
+    for (auto OneWeaponData : WeaponData)
+    {
+        auto ReloadFinishedNotify =
+            AnimUtils::FindNotifyByClass<UKTAReloadFinishedAnimNotify>(OneWeaponData.ReloadAnimMontage);
         if (!ReloadFinishedNotify)
-            continue;
-        
+        {
+            UE_LOG(LogWeaponComponent, Error, TEXT("Reload anim notify is fogotten to set"));
+            checkNoEntry();
+        }
+
         ReloadFinishedNotify->OnNotified.AddUObject(this, &UKTAWeaponComponent::OnReloadFinished);
     }
 }
@@ -161,7 +176,6 @@ void UKTAWeaponComponent::OnReloadFinished(USkeletalMeshComponent *MeshComponent
         return;
 
     ReloadAnimInProgress = false;
-    
 }
 
 bool UKTAWeaponComponent::CanFire()
@@ -176,13 +190,28 @@ bool UKTAWeaponComponent::CanEquip()
 
 bool UKTAWeaponComponent::CanReload()
 {
-    return CurrentWeapon && !EquipAnimInProgress && !ReloadAnimInProgress;
+    return CurrentWeapon //
+        && !EquipAnimInProgress //
+        && !ReloadAnimInProgress//
+           && CurrentWeapon->CanReload();
 }
 
 void UKTAWeaponComponent::Reload()
 {
+    ChangeClip();
+}
+
+void UKTAWeaponComponent::OnEmptyClip()
+{
+    ChangeClip();
+}
+void UKTAWeaponComponent::ChangeClip()
+{
     if (!CanReload())
         return;
+
+    CurrentWeapon->StopFire();
+    CurrentWeapon->ChangeClip();
     ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }

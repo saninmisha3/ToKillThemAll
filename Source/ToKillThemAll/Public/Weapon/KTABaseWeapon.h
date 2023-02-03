@@ -4,24 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "KTACoreTypes.h"
 #include "KTABaseWeapon.generated.h"
+
+
 
 class USkeletalMeshComponent;
 
-USTRUCT(BlueprintType)
-struct FAmmoData
-{
-    GENERATED_USTRUCT_BODY()
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    int32 Bullets;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon", meta = (EditCondition = "!Infinite"))
-    int32 Clips;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    bool Infinite;
-};
 
 
 UCLASS()
@@ -33,8 +23,13 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
     // Sets default values for this actor's properties
     AKTABaseWeapon();
 
+    FOnClipEmptySignature OnClipEmpty;
+
     virtual void StartFire();
     virtual void StopFire();
+
+    void ChangeClip();
+    bool CanReload() const;
 
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -66,7 +61,7 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
     void DecreaseAmmo();
     bool IsAmmoEmpty() const;
     bool IsClipEmpty() const;
-    void ChangeClip();
+
     void LogAmmo();
 
 

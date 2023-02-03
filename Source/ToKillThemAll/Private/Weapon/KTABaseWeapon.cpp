@@ -23,48 +23,47 @@ void AKTABaseWeapon::BeginPlay()
 {
     Super::BeginPlay();
     check(WeaponMesh);
+    checkf(DefaultAmmo.Bullets > 0, TEXT("Bullets count couldnt be less zero"));
+    checkf(DefaultAmmo.Clips > 0, TEXT("Clips count couldnt be less zero"));
     CurrentAmmo = DefaultAmmo;
 }
 
 void AKTABaseWeapon::StartFire()
 {
-
 }
 
 void AKTABaseWeapon::StopFire()
 {
-
 }
 
- void AKTABaseWeapon::MakeShot()
+void AKTABaseWeapon::MakeShot()
 {
-
 }
 
-APlayerController* AKTABaseWeapon::GetPlayerController() const
+APlayerController *AKTABaseWeapon::GetPlayerController() const
 {
     const auto Player = Cast<ACharacter>(GetOwner());
     if (!Player)
         return nullptr;
 
     return Player->GetController<APlayerController>();
-
 }
 
 bool AKTABaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
 {
     const auto Controller = GetPlayerController();
     if (!Controller)
-    return false;
+        return false;
 
     Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
     return true;
 }
 
+void AKTABaseWeapon::MakeHit(FHitResult &HitResult, const FVector TraceStart, const FVector TraceEnd)
+{
 
-void AKTABaseWeapon::MakeHit(FHitResult& HitResult, const FVector TraceStart, const FVector TraceEnd) {
-   
-    if (!GetWorld()) return;
+    if (!GetWorld())
+        return;
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(GetOwner());
 
@@ -72,15 +71,20 @@ void AKTABaseWeapon::MakeHit(FHitResult& HitResult, const FVector TraceStart, co
                                          CollisionParams);
 };
 
-
 void AKTABaseWeapon::DecreaseAmmo()
 {
+    if (CurrentAmmo.Bullets == 0)
+    {
+        UE_LOG(LogBaseWeapon, Display, TEXT("No more bullets"));
+        return;
+    }
     CurrentAmmo.Bullets--;
     LogAmmo();
 
     if (IsClipEmpty() && !IsAmmoEmpty())
     {
-        ChangeClip();
+        StopFire();
+        OnClipEmpty.Broadcast();
     }
 }
 bool AKTABaseWeapon::IsAmmoEmpty() const
@@ -93,11 +97,16 @@ bool AKTABaseWeapon::IsClipEmpty() const
 }
 void AKTABaseWeapon::ChangeClip()
 {
-    CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     if (!CurrentAmmo.Infinite)
     {
+        if (CurrentAmmo.Clips == 0)
+        {
+            UE_LOG(LogBaseWeapon, Display, TEXT("Clip is empty"));
+            return;
+        }
         CurrentAmmo.Clips--;
     }
+    CurrentAmmo.Bullets = DefaultAmmo.Bullets;
     UE_LOG(LogBaseWeapon, Display, TEXT("----------- Change Clip --------------"));
 }
 void AKTABaseWeapon::LogAmmo()
@@ -105,4 +114,9 @@ void AKTABaseWeapon::LogAmmo()
     FString AmmoInfo = "Ammo:" + FString::FromInt(CurrentAmmo.Bullets) + "/";
     AmmoInfo += CurrentAmmo.Infinite ? "Infinite" : FString::FromInt(CurrentAmmo.Clips);
     UE_LOG(LogBaseWeapon, Display, TEXT("%s"), *AmmoInfo);
+}
+
+bool AKTABaseWeapon::CanReload() const
+{
+    return CurrentAmmo.Bullets < DefaultAmmo.Bullets && CurrentAmmo.Clips > 0;
 }

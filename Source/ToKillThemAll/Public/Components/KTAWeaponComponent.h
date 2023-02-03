@@ -4,21 +4,12 @@
 
 #include "Components/ActorComponent.h"
 #include "CoreMinimal.h"
+#include "KTACoreTypes.h"
 #include "KTAWeaponComponent.generated.h"
 
 class AKTABaseWeapon;
 
-USTRUCT(BlueprintType)
-struct FWeaponData
-{
-    GENERATED_USTRUCT_BODY()
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    TSubclassOf<AKTABaseWeapon> WeaponClass;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
-    UAnimMontage *ReloadAnimMontage;
-};
 
 
 
@@ -87,21 +78,8 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool CanEquip();
     bool CanReload();
 
-    template<typename T> 
-    T *FindNotifyByClass(UAnimSequenceBase* Animation)
-    {
-        if (!Animation)
-            return nullptr;
-        const auto NotifyEvents = Animation->Notifies;
-        for (auto NotifyEvent : NotifyEvents)
-        {
-            auto AnimNotify = Cast<T>(NotifyEvent.Notify);
-            if (AnimNotify)
-            {
-                return AnimNotify;
-            }
-        }
-        return nullptr;
+    void OnEmptyClip();
+    void ChangeClip();
+
     
-    }
 };
