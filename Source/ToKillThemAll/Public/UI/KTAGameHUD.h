@@ -17,6 +17,12 @@ class TOKILLTHEMALL_API AKTAGameHUD : public AHUD
   public:
     virtual void DrawHUD() override;
 
+    protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> PlayerHUDWigetClass;
+        
+    virtual void BeginPlay() override;
+
   private:
     void DrawCrossHaie();
 };

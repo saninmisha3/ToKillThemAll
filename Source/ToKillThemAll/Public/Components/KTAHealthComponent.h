@@ -27,11 +27,18 @@ class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
         return Health;
     }
 
-    UFUNCTION(BlueprintCallable)
+    UFUNCTION(BlueprintCallable, Category = "Health")
     bool IsDead() const
     {
         return FMath::IsNearlyZero(Health);
     }
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    float GetHealthPercent() const
+    {
+        return Health / MaxHealth;
+    }
+
 
     //UFUNCTION(BlueprintCallable)
     //bool HealthIsFull() const {return Health <= 0.0f;}

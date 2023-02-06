@@ -1,11 +1,21 @@
 #include "UI/KTAGameHUD.h"
 #include "Engine/Canvas.h"
+#include "Blueprint/UserWidget.h"
 
+void AKTAGameHUD::BeginPlay()
+{
+    Super::BeginPlay();
+    auto PlaterHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWigetClass);
+    if (PlaterHUDWidget)
+    {
+        PlaterHUDWidget->AddToViewport();
+    }
 
+}
 void AKTAGameHUD::DrawHUD()
 {
     Super::DrawHUD();
-    DrawCrossHaie();
+    //DrawCrossHaie();
 }
 
 void AKTAGameHUD::DrawCrossHaie()

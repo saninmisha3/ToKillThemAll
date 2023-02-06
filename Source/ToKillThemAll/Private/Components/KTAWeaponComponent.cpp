@@ -1,14 +1,14 @@
 // Kill Them All Game, All Rights Reserved
 
 #include "Components/KTAWeaponComponent.h"
+#include "Animation/AnimUtils.h"
 #include "Animation/KTAEquipFinishedAnimNotify.h"
 #include "Animation/KTAReloadFinishedAnimNotify.h"
-#include "Animation/AnimUtils.h"
 #include "GameFramework/Character.h"
 #include "Weapon/KTABaseWeapon.h"
 
-DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
+DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 constexpr static int32 WeaponNum = 2;
 // Sets default values for this component's properties
@@ -20,6 +20,7 @@ UKTAWeaponComponent::UKTAWeaponComponent()
 
     // ...
 }
+
 
 void UKTAWeaponComponent::StartFire()
 {
@@ -190,9 +191,9 @@ bool UKTAWeaponComponent::CanEquip()
 
 bool UKTAWeaponComponent::CanReload()
 {
-    return CurrentWeapon //
-        && !EquipAnimInProgress //
-        && !ReloadAnimInProgress//
+    return CurrentWeapon            //
+           && !EquipAnimInProgress  //
+           && !ReloadAnimInProgress //
            && CurrentWeapon->CanReload();
 }
 
@@ -215,3 +216,26 @@ void UKTAWeaponComponent::ChangeClip()
     ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
+
+
+bool UKTAWeaponComponent::GetCurrentWeponUIData(FWeaponUIData &UIData) const
+{
+    if (CurrentWeapon)
+    {
+        UIData = CurrentWeapon->GetUIData();
+        return true;
+    }
+    return false;
+}
+
+bool UKTAWeaponComponent::GetCurrentWeponAmmoData(FAmmoData &AmmoData) const
+{
+    if (CurrentWeapon)
+    {
+        AmmoData = CurrentWeapon->GetAmmoData();
+        //AmmoData = CurrentWeapon;
+        return true;
+    }
+    return false;
+}
+

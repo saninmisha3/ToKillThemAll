@@ -9,11 +9,6 @@
 
 class AKTABaseWeapon;
 
-
-
-
-
-
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
 {
@@ -23,19 +18,18 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     // Sets default values for this component's properties
     UKTAWeaponComponent();
 
-
     void StartFire();
     void StopFire();
     void NextWeapon();
     void Reload();
 
-
+    bool GetCurrentWeponUIData(FWeaponUIData &UIData) const;
+    bool GetCurrentWeponAmmoData(FAmmoData &AmmoData) const;
 
   protected:
     // Called when the game starts
     virtual void BeginPlay() override;
     virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
 
     UPROPERTY(EditDefaultsOnly, Category = "Weapon")
     TArray<FWeaponData> WeaponData;
@@ -47,14 +41,14 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     FName WeaponArmorySocketName = "ArmorySocket";
 
     UPROPERTY(EditDefaultsOnly, Category = "Animation")
-    UAnimMontage* EquipAnimMontage;
+    UAnimMontage *EquipAnimMontage;
 
   private:
     UPROPERTY()
     AKTABaseWeapon *CurrentWeapon = nullptr;
 
     UPROPERTY()
-    TArray<AKTABaseWeapon*> Weapons;
+    TArray<AKTABaseWeapon *> Weapons;
 
     UPROPERTY()
     UAnimMontage *CurrentReloadAnimMontage = nullptr;
@@ -64,14 +58,13 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool ReloadAnimInProgress = false;
 
     void SpawnWeapons();
-    void AttachWeaponToSocket(AKTABaseWeapon *Weapon, USceneComponent *SceneComponent,
-                                                   const FName &SocketName);
+    void AttachWeaponToSocket(AKTABaseWeapon *Weapon, USceneComponent *SceneComponent, const FName &SocketName);
     void EquipWeapon(int32 WeaponIndex);
 
     void PlayAnimMontage(UAnimMontage *Animation);
 
     void InitAnimations();
-    void OnEquipFinished(USkeletalMeshComponent* MeshComponent);
+    void OnEquipFinished(USkeletalMeshComponent *MeshComponent);
     void OnReloadFinished(USkeletalMeshComponent *MeshComponent);
 
     bool CanFire();
@@ -80,6 +73,4 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
 
     void OnEmptyClip();
     void ChangeClip();
-
-    
 };
