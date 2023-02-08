@@ -26,6 +26,8 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool GetCurrentWeponUIData(FWeaponUIData &UIData) const;
     bool GetCurrentWeponAmmoData(FAmmoData &AmmoData) const;
 
+    bool TryToAddAmmo(TSubclassOf<AKTABaseWeapon> WeaponType, int32 ClipsAmount);
+
   protected:
     // Called when the game starts
     virtual void BeginPlay() override;
@@ -71,6 +73,6 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool CanEquip();
     bool CanReload();
 
-    void OnEmptyClip();
+    void OnEmptyClip(AKTABaseWeapon* AmmoEmptyWeapon);
     void ChangeClip();
 };

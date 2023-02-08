@@ -36,6 +36,8 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
         return CurrentAmmo;
     }
 
+    bool TryToAddAmmo(int32 ClipsAmount);
+
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent *WeaponMesh;
@@ -64,6 +66,7 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
     void DecreaseAmmo();
     bool IsAmmoEmpty() const;
     bool IsClipEmpty() const;
+    bool IsAmmoFull() const;
 
     void LogAmmo();
 

@@ -39,6 +39,8 @@ class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
         return Health / MaxHealth;
     }
 
+    bool TryToAddHealth(int32 HealthAmount);
+    bool IsHeathFull() const;
 
     //UFUNCTION(BlueprintCallable)
     //bool HealthIsFull() const {return Health <= 0.0f;}

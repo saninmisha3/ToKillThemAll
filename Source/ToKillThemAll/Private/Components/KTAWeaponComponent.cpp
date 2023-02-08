@@ -7,7 +7,6 @@
 #include "GameFramework/Character.h"
 #include "Weapon/KTABaseWeapon.h"
 
-
 DEFINE_LOG_CATEGORY_STATIC(LogWeaponComponent, All, All);
 
 constexpr static int32 WeaponNum = 2;
@@ -20,7 +19,6 @@ UKTAWeaponComponent::UKTAWeaponComponent()
 
     // ...
 }
-
 
 void UKTAWeaponComponent::StartFire()
 {
@@ -202,9 +200,24 @@ void UKTAWeaponComponent::Reload()
     ChangeClip();
 }
 
-void UKTAWeaponComponent::OnEmptyClip()
+void UKTAWeaponComponent::OnEmptyClip(AKTABaseWeapon *AmmoEmptyWeapon)
 {
-    ChangeClip();
+    if (!AmmoEmptyWeapon)
+        return;
+    if (CurrentWeapon == AmmoEmptyWeapon)
+    {
+        ChangeClip();
+    }
+    else
+    {
+        for (const auto Weapon:Weapons)
+        {
+            if (Weapon == AmmoEmptyWeapon)
+            {
+                Weapon->ChangeClip();
+            }
+        }
+    }
 }
 void UKTAWeaponComponent::ChangeClip()
 {
@@ -216,7 +229,6 @@ void UKTAWeaponComponent::ChangeClip()
     ReloadAnimInProgress = true;
     PlayAnimMontage(CurrentReloadAnimMontage);
 }
-
 
 bool UKTAWeaponComponent::GetCurrentWeponUIData(FWeaponUIData &UIData) const
 {
@@ -233,9 +245,20 @@ bool UKTAWeaponComponent::GetCurrentWeponAmmoData(FAmmoData &AmmoData) const
     if (CurrentWeapon)
     {
         AmmoData = CurrentWeapon->GetAmmoData();
-        //AmmoData = CurrentWeapon;
+        // AmmoData = CurrentWeapon;
         return true;
     }
     return false;
 }
 
+bool UKTAWeaponComponent::TryToAddAmmo(TSubclassOf<AKTABaseWeapon> WeaponType, int32 ClipsAmount)
+{
+    for (const auto Weapon: Weapons)
+    {
+        if (Weapon && Weapon->IsA(WeaponType))
+        {
+            return Weapon->TryToAddAmmo(ClipsAmount);
+        }
+    }
+    return false;
+}

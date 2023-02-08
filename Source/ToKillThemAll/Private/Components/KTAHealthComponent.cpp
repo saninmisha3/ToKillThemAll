@@ -1,8 +1,8 @@
 // Kill Them All Game, All Rights Reserved
 
 #include "Components/KTAHealthComponent.h"
-#include "GameFramework/Actor.h"
 #include "Engine/World.h"
+#include "GameFramework/Actor.h"
 #include "TimerManager.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
@@ -21,7 +21,7 @@ UKTAHealthComponent::UKTAHealthComponent()
 void UKTAHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
-    
+
     check(MaxHealth > 0);
 
     SetHealth(MaxHealth);
@@ -41,8 +41,6 @@ void UKTAHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
     if (Damage <= 0.0f || IsDead() || !GetWorld())
         return;
 
-    
-   
     SetHealth(Health - Damage);
 
     // UE_LOG(LogHealthComponent, Display, TEXT("Damago: %f"), Damage);
@@ -54,7 +52,8 @@ void UKTAHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
     }
     else if (AutoHeal && GetWorld())
     {
-        GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UKTAHealthComponent::HealUpdate, HealUpdateTime, true, HealDelay);
+        GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UKTAHealthComponent::HealUpdate, HealUpdateTime,
+                                               true, HealDelay);
     }
 }
 
@@ -62,7 +61,7 @@ void UKTAHealthComponent::HealUpdate()
 {
     SetHealth(Health + HealModifier);
 
-    if (FMath::IsNearlyEqual(Health, MaxHealth) && GetWorld())
+    if (IsHeathFull() && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
     }
@@ -72,4 +71,19 @@ void UKTAHealthComponent::SetHealth(float NewHealth)
 {
     Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
     OnHealthChanged.Broadcast(Health);
+}
+
+bool UKTAHealthComponent::TryToAddHealth(int32 HealthAmount)
+{
+    if (IsDead() || IsHeathFull())
+        return false;
+
+    SetHealth(Health + HealthAmount);
+
+    return true;
+}
+
+bool UKTAHealthComponent::IsHeathFull() const
+{
+    return FMath::IsNearlyEqual(Health, MaxHealth);
 }
