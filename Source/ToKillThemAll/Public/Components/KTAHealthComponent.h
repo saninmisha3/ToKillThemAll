@@ -7,7 +7,7 @@
 #include "KTACoreTypes.h"
 #include "KTAHealthComponent.generated.h"
 
-
+class UCameraShakeBase;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
@@ -67,6 +67,9 @@ class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
     UPROPERTY(EditAnywhere, Category = "Heal", meta = (EditCondition = "AutoHeal"))
     float HealModifier = 1.0f;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
+    TSubclassOf<UCameraShakeBase> CamerShake;
+
   private:
 
     FTimerHandle HealTimerHandle;
@@ -79,4 +82,7 @@ class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
      
      void HealUpdate();
      void SetHealth(float NewHealth);
+
+
+     void PlayCameraShake();
 };

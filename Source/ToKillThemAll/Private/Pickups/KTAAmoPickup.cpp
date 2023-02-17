@@ -1,9 +1,10 @@
 // Kill Them All Game, All Rights Reserved
 
+#include "Pickups/KTAAmoPickup.h"
 #include "Components/KTAHealthComponent.h"
 #include "Components/KTAWeaponComponent.h"
 #include "KTAUtils.h"
-#include "Pickups/KTAAmoPickup.h"
+
 
 
 DEFINE_LOG_CATEGORY_STATIC(LogAmmoPickup, All, All);

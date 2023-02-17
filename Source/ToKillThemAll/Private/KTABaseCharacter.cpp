@@ -49,8 +49,9 @@ void AKTABaseCharacter::BeginPlay()
     check(HealthComponent);
     check(HealthTextComponent);
     check(GetCharacterMovement());
+    check(GetMesh());
 
-    OnHealthChanged(HealthComponent->GetHealth());
+    OnHealthChanged(HealthComponent->GetHealth(), 0.0f);
     HealthComponent->OnDeath.AddUObject(this, &AKTABaseCharacter::OnDeath);
     HealthComponent->OnHealthChanged.AddUObject(this, &AKTABaseCharacter::OnHealthChanged);
 
@@ -129,7 +130,7 @@ void AKTABaseCharacter::OnStopRunning()
 void AKTABaseCharacter::OnDeath()
 {
     UE_LOG(BaseCharacterLog, Display, TEXT("Player % s is dead"), *GetName());
-    PlayAnimMontage(DeathAnimMontage);
+    //PlayAnimMontage(DeathAnimMontage);
 
     GetCharacterMovement()->DisableMovement();
     SetLifeSpan(LifeSpanOnDeath);
@@ -141,9 +142,12 @@ void AKTABaseCharacter::OnDeath()
     if (!WeaponComponent)
         return;
     WeaponComponent->StopFire();
+
+    GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    GetMesh()->SetSimulatePhysics(true);
 }
 
-void AKTABaseCharacter::OnHealthChanged(float Health)
+void AKTABaseCharacter::OnHealthChanged(float Health, float HealthDelta)
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), Health)));
 }

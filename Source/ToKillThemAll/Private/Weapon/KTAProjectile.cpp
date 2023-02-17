@@ -5,6 +5,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Weapon/Components/KTAWeaponFXComponent.h"
 
 // Sets default values
 AKTAProjectile::AKTAProjectile()
@@ -16,9 +17,11 @@ AKTAProjectile::AKTAProjectile()
     CollisionComponent->InitSphereRadius(5.0f);
     CollisionComponent->SetCollisionEnabled(ECollisionEnabled ::QueryOnly);
     CollisionComponent->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Block);
+    CollisionComponent->bReturnMaterialOnMove = true;
     SetRootComponent(CollisionComponent);
 
     MovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>("MovementComponent");
+    WeaponFXComponent = CreateDefaultSubobject<UKTAWeaponFXComponent>("WeaponFXComponent");
 }
 
 // Called when the game starts or when spawned
@@ -28,6 +31,8 @@ void AKTAProjectile::BeginPlay()
 
     check(MovementComponent);
     check(CollisionComponent);
+    check(WeaponFXComponent);
+
     MovementComponent->Velocity = ShotDirection * MovementComponent->InitialSpeed;
 
 
@@ -55,8 +60,8 @@ void AKTAProjectile::OnProjectileHit(UPrimitiveComponent *HitComponent, AActor *
                                         GetController(),            //
                                         DoFullDamage);
     
-    DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, 5.0f);
-
+    //DrawDebugSphere(GetWorld(), GetActorLocation(), DamageRadius, 24, FColor::Red, false, 5.0f);
+    WeaponFXComponent->PlayImpactFX(Hit);
         Destroy();
 }
 

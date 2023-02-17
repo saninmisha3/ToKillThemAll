@@ -5,6 +5,22 @@
 #include "Components/KTAWeaponComponent.h"
 #include "KTAUtils.h"
 
+bool UKTAPlayerHUDWidget::Initialize()
+{
+    const auto HeathComponent = KTAUtils::GetKTAPlayerComponent<UKTAHealthComponent>(GetOwningPlayerPawn());
+    if (HeathComponent)
+    {
+        HeathComponent->OnHealthChanged.AddUObject(this, &UKTAPlayerHUDWidget::OnHealthChanged);
+    }
+    return Super::Initialize();
+}
+
+void UKTAPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
+{
+    if (HealthDelta<0.0f)
+    OnTakeDamage();
+}
+
 float UKTAPlayerHUDWidget::Get_HealthPercent() const
 {
     const auto HeathComponent = KTAUtils::GetKTAPlayerComponent<UKTAHealthComponent>(GetOwningPlayerPawn());

@@ -3,7 +3,11 @@
 #include "Components/KTAHealthComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/Actor.h"
+#include "GameFramework/Pawn.h"
+#include "GameFramework/Controller.h"
+//#include "Camera/CameraShake.h"
 #include "TimerManager.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All);
 
@@ -55,6 +59,7 @@ void UKTAHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
         GetWorld()->GetTimerManager().SetTimer(HealTimerHandle, this, &UKTAHealthComponent::HealUpdate, HealUpdateTime,
                                                true, HealDelay);
     }
+    PlayCameraShake();
 }
 
 void UKTAHealthComponent::HealUpdate()
@@ -69,8 +74,11 @@ void UKTAHealthComponent::HealUpdate()
 
 void UKTAHealthComponent::SetHealth(float NewHealth)
 {
-    Health = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
-    OnHealthChanged.Broadcast(Health);
+    const auto NextHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+    const auto HealthDelta = NextHealth - Health;
+
+    Health = NextHealth;
+    OnHealthChanged.Broadcast(Health, HealthDelta);
 }
 
 bool UKTAHealthComponent::TryToAddHealth(int32 HealthAmount)
@@ -86,4 +94,20 @@ bool UKTAHealthComponent::TryToAddHealth(int32 HealthAmount)
 bool UKTAHealthComponent::IsHeathFull() const
 {
     return FMath::IsNearlyEqual(Health, MaxHealth);
+}
+
+void UKTAHealthComponent::PlayCameraShake()
+{
+    if (IsDead())
+        return;
+
+    const auto Player = Cast<APawn>(GetOwner());
+    if (!Player)
+        return;
+
+    const auto Controller = Player->GetController<APlayerController>();
+    if (!Controller || !Controller->PlayerCameraManager)
+        return;
+
+    Controller->PlayerCameraManager->StartCameraShake(CamerShake);
 }

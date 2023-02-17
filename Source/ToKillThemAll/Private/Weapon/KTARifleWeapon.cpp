@@ -4,11 +4,26 @@
 #include "Weapon/KTARifleWeapon.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
+#include "Weapon/Components/KTAWeaponFXComponent.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
+
+AKTARifleWeapon::AKTARifleWeapon()
+{
+    WeaponFXComponent = CreateDefaultSubobject<UKTAWeaponFXComponent>("WeaponFXComponent");
+}
+
+void AKTARifleWeapon::BeginPlay()
+{
+    Super::BeginPlay();
+
+    check(WeaponFXComponent);
+}
 
 void AKTARifleWeapon::StartFire()
 {
     // UE_LOG(LogBaseWeapon, Display, TEXT("Fire!!!"));
-
+    InitMuzzleFX();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AKTARifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
 }
@@ -18,6 +33,7 @@ void AKTARifleWeapon::StopFire()
     // UE_LOG(LogBaseWeapon, Display, TEXT("Fire!!!"));
 
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
+    SetMuzzleFXVisibility(false);
 }
 
 void AKTARifleWeapon::MakeShot()
@@ -43,22 +59,18 @@ void AKTARifleWeapon::MakeShot()
     FHitResult HitResult;
     MakeHit(HitResult, TraceStart, TraceEnd);
 
+    FVector TraceFXEnd = TraceEnd;
     if (HitResult.bBlockingHit)
     {
+        TraceFXEnd = HitResult.ImpactPoint;
         MakeDamage(HitResult);
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), HitResult.ImpactPoint, FColor::Red, false, 3.0f, 0,
-                      3.0f);
-        DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10.0f, 24, FColor::Red, false, 5.0f);
-
+                      WeaponFXComponent->PlayImpactFX(HitResult);
         //
 
         //UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
     }
-    else
-    {
-        DrawDebugLine(GetWorld(), SocketTransform.GetLocation(), TraceEnd, FColor::Red, false, 3.0f, 0, 3.0f);
-    }
 
+    SpawnTraceFX(SocketTransform.GetLocation(), TraceFXEnd);
     DecreaseAmmo();
 }
 
@@ -68,4 +80,31 @@ void AKTARifleWeapon::MakeDamage(const FHitResult &HitResult)
     if (!DamagedActor)
         return;
     DamagedActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
+}
+void AKTARifleWeapon::InitMuzzleFX()
+{
+    if (!MuzzleFXComponent)
+    {
+        MuzzleFXComponent = SpawnMuzzleFX();
+    }
+    SetMuzzleFXVisibility(true);
+}
+
+void AKTARifleWeapon::SetMuzzleFXVisibility(bool Visible)
+{
+    if (MuzzleFXComponent)
+    {
+        MuzzleFXComponent->SetPaused(!Visible);
+        MuzzleFXComponent->SetVisibility(Visible, true);
+    }
+
+}
+
+void AKTARifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd)
+{
+    const auto TraceFXComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), TraceFX, TraceStart);
+    if (TraceFXComponent)
+    {
+        TraceFXComponent->SetNiagaraVariableVec3(TraceTargetName, TraceEnd);
+    }
 }

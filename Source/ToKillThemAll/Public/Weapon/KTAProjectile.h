@@ -8,6 +8,7 @@
 
 class USphereComponent;
 class UProjectileMovementComponent;
+class UKTAWeaponFXComponent;
 
 UCLASS()
 class TOKILLTHEMALL_API AKTAProjectile : public AActor
@@ -41,6 +42,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     float LifeSeconds = 5.0f;
+
+	UPROPERTY(VisibleAnywhere, Category = "VFX")
+    UKTAWeaponFXComponent *WeaponFXComponent;
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

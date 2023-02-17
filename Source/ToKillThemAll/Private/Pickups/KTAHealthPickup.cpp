@@ -1,8 +1,9 @@
 // Kill Them All Game, All Rights Reserved
 
+#include "Pickups/KTAHealthPickup.h"
 #include "Components/KTAHealthComponent.h"
 #include "KTAUtils.h"
-#include "Pickups/KTAHealthPickup.h"
+
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthPickup, All, All);
 

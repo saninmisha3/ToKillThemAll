@@ -48,4 +48,5 @@ void AKTALauncherWeapon::MakeShot()
     
     }
     DecreaseAmmo();
+    SpawnMuzzleFX();
 }

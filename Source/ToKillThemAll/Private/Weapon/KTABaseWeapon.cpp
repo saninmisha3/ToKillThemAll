@@ -7,6 +7,8 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/Controller.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseWeapon, All, All);
 // Sets default values
@@ -66,6 +68,7 @@ void AKTABaseWeapon::MakeHit(FHitResult &HitResult, const FVector TraceStart, co
         return;
     FCollisionQueryParams CollisionParams;
     CollisionParams.AddIgnoredActor(GetOwner());
+    CollisionParams.bReturnPhysicalMaterial = true;
 
     GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECollisionChannel::ECC_Visibility,
                                          CollisionParams);
@@ -141,7 +144,7 @@ bool AKTABaseWeapon::TryToAddAmmo(int32 ClipsAmount)
     else if (CurrentAmmo.Clips < DefaultAmmo.Clips)
     {
         const auto NextClipsAmount = CurrentAmmo.Clips + ClipsAmount;
-        if (DefaultAmmo.Clips - NextClipsAmount>=0)
+        if (DefaultAmmo.Clips - NextClipsAmount >= 0)
         {
             CurrentAmmo.Clips = NextClipsAmount;
             UE_LOG(LogBaseWeapon, Display, TEXT("Clips were added"));
@@ -160,4 +163,15 @@ bool AKTABaseWeapon::TryToAddAmmo(int32 ClipsAmount)
     }
 
     return true;
+}
+
+UNiagaraComponent *AKTABaseWeapon::SpawnMuzzleFX()
+{
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,                      //
+                                                 WeaponMesh,                    //
+                                                 MuzzleSocketName,              //
+                                                 FVector::ZeroVector,           //
+                                                 FRotator::ZeroRotator,           //
+                                                 EAttachLocation::Type::SnapToTarget, //
+                                                 true);
 }
