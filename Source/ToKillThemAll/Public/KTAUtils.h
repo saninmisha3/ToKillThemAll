@@ -2,7 +2,7 @@
 class KTAUtils
 {
   public:
-    template <typename T> static T *GetKTAPlayerComponent(APawn *PlayerPawn)
+    template <typename T> static T *GetKTAPlayerComponent(AActor *PlayerPawn)
     {
         if (!PlayerPawn)
             return nullptr;

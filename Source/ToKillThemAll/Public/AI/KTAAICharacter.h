@@ -6,8 +6,8 @@
 #include "KTABaseCharacter.h"
 #include "KTAAICharacter.generated.h"
 
-
-/**
+class UBehaviorTree;
+    /**
  *
  */
 UCLASS()
@@ -17,4 +17,7 @@ class TOKILLTHEMALL_API AKTAAICharacter : public AKTABaseCharacter
 
   public:
     AKTAAICharacter(const FObjectInitializer &ObjInit);
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
+    UBehaviorTree *BehaviorTreeAsset;
 };
