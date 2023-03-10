@@ -3,9 +3,11 @@
 
 #include "AI/KTAAICharacter.h"
 #include "AI/KTAAIController.h"
+#include "Components/KTAAIWeaponComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
-AKTAAICharacter::AKTAAICharacter(const FObjectInitializer &ObjInit) : Super(ObjInit)
+AKTAAICharacter::AKTAAICharacter(const FObjectInitializer &ObjInit):
+    Super(ObjInit.SetDefaultSubobjectClass<UKTAAIWeaponComponent>("WeaponComponent"))
 {
     AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
     AIControllerClass = AKTAAIController::StaticClass();

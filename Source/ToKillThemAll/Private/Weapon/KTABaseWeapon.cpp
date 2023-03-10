@@ -53,11 +53,23 @@ APlayerController *AKTABaseWeapon::GetPlayerController() const
 
 bool AKTABaseWeapon::GetPlayerViewPoint(FVector &ViewLocation, FRotator &ViewRotation) const
 {
-    const auto Controller = GetPlayerController();
-    if (!Controller)
+    const auto KTACharacter = Cast<ACharacter>(GetOwner());
+    if (!KTACharacter)
         return false;
+    
+    if (KTACharacter->IsPlayerControlled())
+    {
+        const auto Controller = GetPlayerController();
+        if (!Controller)
+            return false;
 
-    Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+        Controller->GetPlayerViewPoint(ViewLocation, ViewRotation);
+    }
+    else
+    {
+        ViewLocation = WeaponMesh->GetSocketLocation(MuzzleSocketName);
+        ViewRotation = WeaponMesh->GetSocketRotation(MuzzleSocketName);
+    }
     return true;
 }
 
@@ -167,11 +179,11 @@ bool AKTABaseWeapon::TryToAddAmmo(int32 ClipsAmount)
 
 UNiagaraComponent *AKTABaseWeapon::SpawnMuzzleFX()
 {
-    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,                      //
-                                                 WeaponMesh,                    //
-                                                 MuzzleSocketName,              //
-                                                 FVector::ZeroVector,           //
-                                                 FRotator::ZeroRotator,           //
-                                                 EAttachLocation::Type::SnapToTarget, //
-                                                 true);
+    return UNiagaraFunctionLibrary::SpawnSystemAttached(MuzzleFX,                            //
+                                                        WeaponMesh,                          //
+                                                        MuzzleSocketName,                    //
+                                                        FVector::ZeroVector,                 //
+                                                        FRotator::ZeroRotator,               //
+                                                        EAttachLocation::Type::SnapToTarget, //
+                                                        true);
 }
