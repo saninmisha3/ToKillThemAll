@@ -20,4 +20,7 @@ class TOKILLTHEMALL_API AKTAAICharacter : public AKTABaseCharacter
     
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "AI")
     UBehaviorTree *BehaviorTreeAsset;
+
+    protected:
+    virtual void OnDeath() override;
 };
