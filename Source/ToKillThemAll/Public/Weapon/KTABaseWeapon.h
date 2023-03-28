@@ -41,6 +41,7 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
 
     bool TryToAddAmmo(int32 ClipsAmount);
     bool IsAmmoEmpty() const;
+    bool IsAmmoFull() const;
 
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -72,7 +73,7 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
     void DecreaseAmmo();
     
     bool IsClipEmpty() const;
-    bool IsAmmoFull() const;
+    
 
     void LogAmmo();
 

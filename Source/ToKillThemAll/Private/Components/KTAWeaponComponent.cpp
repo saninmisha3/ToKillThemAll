@@ -262,3 +262,15 @@ bool UKTAWeaponComponent::TryToAddAmmo(TSubclassOf<AKTABaseWeapon> WeaponType, i
     }
     return false;
 }
+
+bool UKTAWeaponComponent::NeedAmmo(TSubclassOf<AKTABaseWeapon> WeaponType)
+{
+    for (const auto Weapon : Weapons)
+    {
+        if (Weapon && Weapon->IsA(WeaponType))
+        {
+            return !Weapon->IsAmmoFull();
+        }
+    }
+    return false;
+}

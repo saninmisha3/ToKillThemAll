@@ -53,7 +53,7 @@ void AKTABasePickup::PickupWasTaken()
     if (GetRootComponent())
         GetRootComponent()->SetVisibility(false, true);
 
-    FTimerHandle RespawnTimerHandle;
+    
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AKTABasePickup::Respawn, RespawnTime);
 }
 
@@ -74,4 +74,10 @@ void AKTABasePickup::GenerateRotationYaw()
 {
     const auto Direction = FMath::RandBool() ? 1.0f : -1.0f;
     RotationYaw = FMath::RandRange(1.0f, 2.0f) * Direction;
+}
+
+bool AKTABasePickup::CouldBeTaking() const
+{
+    return !GetWorldTimerManager().IsTimerActive(RespawnTimerHandle);
+ 
 }

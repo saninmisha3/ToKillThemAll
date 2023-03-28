@@ -27,6 +27,7 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool GetCurrentWeponAmmoData(FAmmoData &AmmoData) const;
 
     bool TryToAddAmmo(TSubclassOf<AKTABaseWeapon> WeaponType, int32 ClipsAmount);
+    bool NeedAmmo(TSubclassOf<AKTABaseWeapon> WeaponType);
 
   protected:
     // Called when the game starts
