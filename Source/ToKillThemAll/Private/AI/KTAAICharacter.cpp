@@ -10,7 +10,7 @@
 AKTAAICharacter::AKTAAICharacter(const FObjectInitializer &ObjInit):
     Super(ObjInit.SetDefaultSubobjectClass<UKTAAIWeaponComponent>("WeaponComponent"))
 {
-    AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+    AutoPossessAI = EAutoPossessAI::Disabled;
     AIControllerClass = AKTAAIController::StaticClass();
 
     bUseControllerRotationYaw = false;

@@ -1,6 +1,3 @@
-// Kill Them All Game, All Rights Reserved
-
-
 #include "AI/EQS/EnvQueryTest_PickupCouldBeTaken.h"
 #include "EnvironmentQuery/Items/EnvQueryItemType_ActorBase.h"
 #include "Pickups/KTABasePickup.h"

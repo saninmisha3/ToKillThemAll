@@ -10,6 +10,8 @@ AKTAAIController::AKTAAIController()
 {
     KTAAIPerceptionComponent = CreateDefaultSubobject<UKTAAIPerceptionComponent>("KTAPerceptionComponent");
     SetPerceptionComponent(*KTAAIPerceptionComponent);
+
+    bWantsPlayerState = true;
 }
 
 void AKTAAIController::OnPossess(APawn *InPawn)
