@@ -24,6 +24,24 @@ public:
 	virtual void StartPlay() override;
     virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
+    void Killed(AController *KillerController, AController *VictimController);
+
+    FGameData GetCurrentGameData() const
+    {
+        return GameData;
+    }
+
+    int32 GetRoundCountDown() const
+    {
+        return RoundCountDown;
+    }
+
+    int32 GetCurrentRound() const
+    {
+        return CurrentRound;
+    }
+
+    void RespawnRequest(AController *Controller);
 	protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AAIControllerClass;
@@ -33,6 +51,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Game")
     FGameData GameData;
+
+
 
 	private:
     int32 CurrentRound = 1;
@@ -49,4 +69,7 @@ public:
     void CreateTeamsInfo();
     FLinearColor DetermineColorByID(int32 TeamID) const;
     void SetPlayerColor(AController *Controller);
+
+    void LogPlayerInfo();
+    void StartRespawn(AController *Controller);
 };

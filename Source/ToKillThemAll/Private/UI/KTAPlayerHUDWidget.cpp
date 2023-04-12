@@ -31,6 +31,9 @@ float UKTAPlayerHUDWidget::Get_HealthPercent() const
     return HeathComponent->GetHealthPercent();
 }
 
+
+
+
 bool UKTAPlayerHUDWidget::GetCurrentWeponUIData(FWeaponUIData &UIData) const
 {
     const auto WeaponComponent = KTAUtils::GetKTAPlayerComponent<UKTAWeaponComponent>(GetOwningPlayerPawn());
@@ -48,6 +51,7 @@ bool UKTAPlayerHUDWidget::GetCurrentWeponAmmoData(FAmmoData &AmmoData) const
 
     return WeaponComponent->GetCurrentWeponAmmoData(AmmoData);
 }
+
 
 bool UKTAPlayerHUDWidget::IsPlayerAlive() const
 {

@@ -7,6 +7,7 @@
 #include "KTAAIController.generated.h"
 
 class UKTAAIPerceptionComponent;
+class UKTARespawnComponent;
 /**
  *
  */
@@ -22,12 +23,15 @@ class TOKILLTHEMALL_API AKTAAIController : public AAIController
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UKTAAIPerceptionComponent *KTAAIPerceptionComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UKTARespawnComponent *RespawnComponent;
+
     UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
     FName FocusOnKeyName = "EnemyActor";
 
     virtual void OnPossess(APawn *InPawn) override;
     virtual void Tick(float DeltaTime) override;
 
-    private:
+  private:
     AActor *GetFocusOnActor() const;
 };

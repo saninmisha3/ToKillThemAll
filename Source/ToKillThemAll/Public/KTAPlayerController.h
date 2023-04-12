@@ -6,12 +6,18 @@
 #include "GameFramework/PlayerController.h"
 #include "KTAPlayerController.generated.h"
 
+class UKTARespawnComponent;
 /**
- * 
+ *
  */
 UCLASS()
 class TOKILLTHEMALL_API AKTAPlayerController : public APlayerController
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
+  public:
+    AKTAPlayerController();
+
+  protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UKTARespawnComponent *RespawnComponent;
 };

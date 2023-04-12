@@ -85,4 +85,7 @@ class TOKILLTHEMALL_API UKTAHealthComponent : public UActorComponent
 
 
      void PlayCameraShake();
+
+    void Killed(AController *KillerController);
+
 };

@@ -6,6 +6,7 @@
 #include "GameFramework/Pawn.h"
 #include "GameFramework/Controller.h"
 //#include "Camera/CameraShake.h"
+#include "KTAGameModeBase.h"
 #include "TimerManager.h"
 
 
@@ -52,6 +53,7 @@ void UKTAHealthComponent::OnTakeAnyDamage(AActor *DamagedActor, float Damage, co
 
     if (IsDead())
     {
+        Killed(InstigatedBy);
         OnDeath.Broadcast();
     }
     else if (AutoHeal && GetWorld())
@@ -110,4 +112,18 @@ void UKTAHealthComponent::PlayCameraShake()
         return;
 
     Controller->PlayerCameraManager->StartCameraShake(CamerShake);
+}
+
+void UKTAHealthComponent::Killed(AController *KillerController)
+{
+    if (!GetWorld())
+        return;
+
+    const auto GameMode = Cast<AKTAGameModeBase>(GetWorld()->GetAuthGameMode());
+
+    const auto Player = Cast<APawn>(GetOwner());
+
+    const auto VictingController = Player ? Player->Controller : nullptr;
+
+    GameMode->Killed(KillerController, VictingController);
 }

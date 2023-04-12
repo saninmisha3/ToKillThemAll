@@ -2,6 +2,7 @@
 
 
 #include "AI/KTAAIController.h"
+#include "Components/KTARespawnComponent.h"
 #include "AI/KTAAICharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/KTAAIPerceptionComponent.h"
@@ -10,6 +11,8 @@ AKTAAIController::AKTAAIController()
 {
     KTAAIPerceptionComponent = CreateDefaultSubobject<UKTAAIPerceptionComponent>("KTAPerceptionComponent");
     SetPerceptionComponent(*KTAAIPerceptionComponent);
+
+    RespawnComponent = CreateDefaultSubobject<UKTARespawnComponent>("RespawnComponent");
 
     bWantsPlayerState = true;
 }

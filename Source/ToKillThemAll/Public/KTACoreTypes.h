@@ -1,10 +1,10 @@
 #pragma once
 
 #include "KTACoreTypes.generated.h"
-//weapon
+// weapon
 class AKTABaseWeapon;
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AKTABaseWeapon*);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnClipEmptySignature, AKTABaseWeapon *);
 
 USTRUCT(BlueprintType)
 struct FAmmoData
@@ -45,13 +45,13 @@ struct FWeaponUIData
     UTexture2D *CrossHairIcon;
 };
 
-//health
+// health
 DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
 DECLARE_MULTICAST_DELEGATE_TwoParams(FOnHealthChangedSignature, float, float);
 
-// VFX 
+// VFX
 
-class UNiagaraSystem; 
+class UNiagaraSystem;
 
 USTRUCT(BlueprintType)
 struct FDecalData
@@ -59,7 +59,7 @@ struct FDecalData
     GENERATED_USTRUCT_BODY()
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
-    UMaterialInterface* Material;
+    UMaterialInterface *Material;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
     FVector Size = FVector(10.0f);
@@ -95,12 +95,14 @@ struct FGameData
     int32 RoundsNum = 4;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "300"))
-    int32 RoundTime = 10; //in sec
+    int32 RoundTime = 10; // in sec
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "300"))
     FLinearColor DefaultTeamColor = FLinearColor::Red;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "300"))
     TArray<FLinearColor> TeamColors;
-};
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game", meta = (ClampMin = "3", ClampMax = "20"))
+    int32 RespawnTime = 5; // in sec
+};

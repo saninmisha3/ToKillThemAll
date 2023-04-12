@@ -29,7 +29,10 @@ AActor *UKTAAIPerceptionComponent::GetClosesEnemy() const
     {
         const auto HealthComponent = KTAUtils::GetKTAPlayerComponent<UKTAHealthComponent>(PercieveActor);
 
-        if (HealthComponent && !HealthComponent->IsDead()) // TODO check if enemies
+        const auto PercievePawn = Cast<APawn>(PercieveActor);
+        const auto AreEnemies = PercievePawn && KTAUtils::AreEnemies(Controller, PercievePawn->Controller);
+
+        if (HealthComponent && !HealthComponent->IsDead() && AreEnemies) // TODO check if enemies
         {
             const auto CurrentDistance = (PercieveActor->GetActorLocation() - Pawn->GetActorLocation()).Size();
             if (CurrentDistance < BestDistance)

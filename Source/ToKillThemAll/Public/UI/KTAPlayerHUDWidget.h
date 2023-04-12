@@ -2,21 +2,21 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "CoreMinimal.h"
 #include "KTACoreTypes.h"
 #include "KTAPlayerHUDWidget.generated.h"
 
 UCLASS()
 class TOKILLTHEMALL_API UKTAPlayerHUDWidget : public UUserWidget
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
   public:
     UFUNCTION(BlueprintCallable, Category = "UI")
     float Get_HealthPercent() const;
 
-    UFUNCTION(BlueprintCallable, Category = "UI")
+    UFUNCTION(BlueprintCallable, Category = "UI") 
     bool GetCurrentWeponUIData(FWeaponUIData &UIData) const;
 
     UFUNCTION(BlueprintCallable, Category = "UI")
@@ -33,6 +33,6 @@ class TOKILLTHEMALL_API UKTAPlayerHUDWidget : public UUserWidget
 
     virtual bool Initialize() override;
 
-    private:
+  private:
     void OnHealthChanged(float Health, float HealthDelta);
 };
