@@ -1,7 +1,8 @@
 // Kill Them All Game, All Rights Reserved
 
-#include "KTAGameModeBase.h"
 #include "Components/KTARespawnComponent.h"
+#include "KTAGameModeBase.h"
+
 
 UKTARespawnComponent::UKTARespawnComponent()
 {
@@ -15,6 +16,11 @@ void UKTARespawnComponent::Respawn(int32 RespawnTime)
 
     RespawnCountDown = RespawnTime;
     GetWorld()->GetTimerManager().SetTimer(RespawnTimerHandle, this, &UKTARespawnComponent::RespawnTimerUpdate, 1.0f, true);
+}
+
+bool UKTARespawnComponent::IsRespawnInProgress() const
+{
+    return GetWorld() && GetWorld()->GetTimerManager().IsTimerActive(RespawnTimerHandle);
 }
 
 void UKTARespawnComponent::RespawnTimerUpdate()

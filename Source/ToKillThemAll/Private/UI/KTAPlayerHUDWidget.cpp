@@ -7,10 +7,10 @@
 
 bool UKTAPlayerHUDWidget::Initialize()
 {
-    const auto HeathComponent = KTAUtils::GetKTAPlayerComponent<UKTAHealthComponent>(GetOwningPlayerPawn());
-    if (HeathComponent)
+    if (GetOwningPlayer())
     {
-        HeathComponent->OnHealthChanged.AddUObject(this, &UKTAPlayerHUDWidget::OnHealthChanged);
+        GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UKTAPlayerHUDWidget::OnNewPawn);
+        OnNewPawn(GetOwningPlayerPawn());
     }
     return Super::Initialize();
 }
@@ -19,6 +19,18 @@ void UKTAPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
 {
     if (HealthDelta<0.0f)
     OnTakeDamage();
+}
+
+void UKTAPlayerHUDWidget::OnNewPawn(APawn *NewPawn)
+{
+
+    const auto HeathComponent = KTAUtils::GetKTAPlayerComponent<UKTAHealthComponent>(NewPawn);
+    
+    if (HeathComponent && !HeathComponent->OnHealthChanged.IsBoundToObject(this))
+    {
+        HeathComponent->OnHealthChanged.AddUObject(this, &UKTAPlayerHUDWidget::OnHealthChanged);
+    }
+
 }
 
 float UKTAPlayerHUDWidget::Get_HealthPercent() const

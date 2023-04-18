@@ -6,10 +6,8 @@
 #include "GameFramework/Character.h"
 #include "KTABaseCharacter.generated.h"
 
-class UCameraComponent;
-class USpringArmComponent;
+
 class UKTAHealthComponent;
-class UTextRenderComponent;
 class UKTAWeaponComponent;
 
 UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
@@ -21,17 +19,10 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     AKTABaseCharacter(const FObjectInitializer &ObjInt);
 
   protected:
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UCameraComponent *CameraComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    USpringArmComponent *SpringArmComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UKTAHealthComponent *HealthComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent *HealthTextComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UKTAWeaponComponent *WeaponComponent;
@@ -67,10 +58,10 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     virtual void Tick(float DeltaTime) override;
 
     // Called to bind functionality to input
-    virtual void SetupPlayerInputComponent(class UInputComponent *PlayerInputComponent) override;
+    
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    virtual bool IsRunning() const;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
@@ -78,14 +69,6 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     void SetPlayerColor(const FLinearColor& Color);
 
   private:
-    bool WantsToRun = false;
-    bool IsMovingForward = false;
-
-    void MoveForward(float Amount);
-    void MoveRight(float Amount);
-    void OnStartRunning();
-    void OnStopRunning();
-    
     void OnHealthChanged(float Health, float HealthDelta);
 
     UFUNCTION()

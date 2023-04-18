@@ -35,4 +35,6 @@ class TOKILLTHEMALL_API UKTAPlayerHUDWidget : public UUserWidget
 
   private:
     void OnHealthChanged(float Health, float HealthDelta);
+
+    void OnNewPawn(APawn* NewPawn);
 };

@@ -72,4 +72,6 @@ public:
 
     void LogPlayerInfo();
     void StartRespawn(AController *Controller);
+
+    void GameOver();
 };

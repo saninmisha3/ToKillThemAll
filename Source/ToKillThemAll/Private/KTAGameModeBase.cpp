@@ -8,6 +8,7 @@
 #include "KTAUtils.h"
 #include "Player/KTAPlayerState.h"
 #include "UI/KTAGameHUD.h"
+#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogKTAGameModeBase, All, All);
 
@@ -94,8 +95,7 @@ void AKTAGameModeBase::GetTimerUpdate()
         }
         else
         {
-            UE_LOG(LogKTAGameModeBase, Display, TEXT("------------ Game Over ------------"));
-            LogPlayerInfo();
+            GameOver();
         }
     }
 }
@@ -207,4 +207,19 @@ void AKTAGameModeBase::StartRespawn(AController *Controller)
         return;
 
     RespawnComponent->Respawn(GameData.RespawnTime);
+}
+
+void AKTAGameModeBase::GameOver()
+{
+    UE_LOG(LogKTAGameModeBase, Display, TEXT("------------ Game Over ------------"));
+    LogPlayerInfo();
+
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        if (Pawn)
+        {
+            Pawn->TurnOff();
+            Pawn->DisableInput(nullptr);
+        }
+    }
 }
