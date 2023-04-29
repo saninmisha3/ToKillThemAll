@@ -3,12 +3,12 @@
 #include "KTAGameModeBase.h"
 #include "AI/KTAAIController.h"
 #include "Components/KTARespawnComponent.h"
+#include "EngineUtils.h"
 #include "KTABaseCharacter.h"
 #include "KTAPlayerController.h"
 #include "KTAUtils.h"
 #include "Player/KTAPlayerState.h"
 #include "UI/KTAGameHUD.h"
-#include "EngineUtils.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogKTAGameModeBase, All, All);
 
@@ -30,6 +30,8 @@ void AKTAGameModeBase::StartPlay()
     CreateTeamsInfo();
     CurrentRound = 1;
     StartRound();
+
+    SetMatchState(EKTAMatchState::InProgress);
 }
 
 UClass *AKTAGameModeBase::GetDefaultPawnClassForController_Implementation(AController *InController)
@@ -139,6 +141,7 @@ void AKTAGameModeBase::CreateTeamsInfo()
 
         PlayerState->SetTeamID(TeamID);
         PlayerState->SetTeamColor(DetermineColorByID(TeamID));
+        PlayerState->SetPlayerName(Controller->IsPlayerController() ? "Player" : "Bot");
         SetPlayerColor(Controller);
         TeamID = TeamID == 1 ? 2 : 1;
     }
@@ -222,4 +225,35 @@ void AKTAGameModeBase::GameOver()
             Pawn->DisableInput(nullptr);
         }
     }
+    SetMatchState(EKTAMatchState::GameOver);
+}
+
+void AKTAGameModeBase::SetMatchState(EKTAMatchState State)
+{
+    if (MatchState == State)
+        return;
+
+    MatchState = State;
+    OnMatchSatateChanged.Broadcast(MatchState);
+}
+
+bool AKTAGameModeBase::SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate)
+{
+    const bool PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
+    if (PauseSet)
+    {
+        SetMatchState(EKTAMatchState::Pause);
+    }
+
+    return PauseSet;
+}
+
+bool AKTAGameModeBase::ClearPause()
+{
+    const auto PauseCleared = Super::ClearPause();
+    if (PauseCleared)
+    {
+        SetMatchState(EKTAMatchState::InProgress);
+    }
+    return PauseCleared;
 }

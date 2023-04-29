@@ -21,6 +21,8 @@ class TOKILLTHEMALL_API AKTAGameModeBase : public AGameModeBase
 public:
     AKTAGameModeBase();
 
+    FOnMatchSatateChangedSignature OnMatchSatateChanged;
+
 	virtual void StartPlay() override;
     virtual UClass *GetDefaultPawnClassForController_Implementation(AController *InController) override;
 
@@ -42,7 +44,11 @@ public:
     }
 
     void RespawnRequest(AController *Controller);
-	protected:
+
+    virtual bool SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate) override;
+    virtual bool ClearPause() override;
+
+    protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     TSubclassOf<AAIController> AAIControllerClass;
 
@@ -55,6 +61,7 @@ public:
 
 
 	private:
+    EKTAMatchState MatchState = EKTAMatchState::WaitingToStart;
     int32 CurrentRound = 1;
     int32 RoundCountDown = 0;
     FTimerHandle GameRoundTimerHandle;
@@ -74,4 +81,6 @@ public:
     void StartRespawn(AController *Controller);
 
     void GameOver();
+
+    void SetMatchState(EKTAMatchState State);
 };

@@ -2,16 +2,37 @@
 #include "Engine/Canvas.h"
 #include "Blueprint/UserWidget.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogKTAGameHUD, All, All);
+
 void AKTAGameHUD::BeginPlay()
 {
     Super::BeginPlay();
-    auto PlaterHUDWidget = CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWigetClass);
-    if (PlaterHUDWidget)
+
+    GameWidgets.Add(EKTAMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EKTAMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(EKTAMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+
+    for (auto GameWidgetPair : GameWidgets)
     {
-        PlaterHUDWidget->AddToViewport();
+        const auto GameWidget = GameWidgetPair.Value;
+        if (!GameWidget)
+            continue;
+       
+        GameWidget->AddToViewport();
+        GameWidget->SetVisibility(ESlateVisibility::Hidden);
     }
 
+
+    if (GetWorld())
+    {
+        const auto GameMode = Cast<AKTAGameModeBase>(GetWorld()->GetAuthGameMode());
+        if (GameMode)
+        {
+            GameMode->OnMatchSatateChanged.AddUObject(this, &AKTAGameHUD::OnMatchStateChanged);
+        }
+    }
 }
+
 void AKTAGameHUD::DrawHUD()
 {
     Super::DrawHUD();
@@ -30,4 +51,25 @@ void AKTAGameHUD::DrawCrossHaie()
 
     DrawLine(Center.Min - HalfLineSize, Center.Max, Center.Min + HalfLineSize, Center.Max, LineColor, LineThickness);
     DrawLine(Center.Min, Center.Max - HalfLineSize, Center.Min, Center.Max + HalfLineSize, LineColor, LineThickness);
+}
+
+void AKTAGameHUD::OnMatchStateChanged(EKTAMatchState State)
+{
+    if (CurrentWinget)
+    {
+        CurrentWinget->SetVisibility(ESlateVisibility::Hidden);
+    }
+
+    if (GameWidgets.Contains(State))
+    {
+        CurrentWinget = GameWidgets[State];
+    }
+
+    if (CurrentWinget)
+    {
+        CurrentWinget->SetVisibility(ESlateVisibility::Visible);
+    }
+
+
+    //UE_LOG(LogKTAGameHUD, Display, TEXT("Match Satate changed: %s"), *UEnum::GetValueAsString(State));
 }

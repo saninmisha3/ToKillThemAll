@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/HUD.h"
+#include "KTACoreTypes.h"
+#include "KTAGameModeBase.h"
 #include "KTAGameHUD.generated.h"
 
 /**
@@ -17,12 +19,26 @@ class TOKILLTHEMALL_API AKTAGameHUD : public AHUD
   public:
     virtual void DrawHUD() override;
 
-    protected:
+  protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
-    TSubclassOf<UUserWidget> PlayerHUDWigetClass;
-        
+    TSubclassOf<UUserWidget> PlayerHUDWidgetClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> PauseWidgetClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
+    TSubclassOf<UUserWidget> GameOverWidgetClass;
+
     virtual void BeginPlay() override;
 
   private:
-    void DrawCrossHaie();
+    UPROPERTY()
+    TMap<EKTAMatchState, UUserWidget *> GameWidgets;
+
+
+    UPROPERTY()
+    UUserWidget *CurrentWinget = nullptr;
+
+        void DrawCrossHaie();
+    void OnMatchStateChanged(EKTAMatchState State);
 };
