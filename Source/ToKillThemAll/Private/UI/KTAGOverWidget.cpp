@@ -3,15 +3,18 @@
 
 #include "UI/KTAGOverWidget.h"
 #include "Components/VerticalBox.h"
+#include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 #include "KTAGameModeBase.h"
 #include "KTAUtils.h"
 #include "Player/KTAPlayerState.h"
 #include "UI/KTAPlayerStatRowWidget.h"
 
 
-bool UKTAGOverWidget::Initialize()
+void UKTAGOverWidget::NativeOnInitialized()
 {
-    
+    Super::NativeOnInitialized();
+
     if (GetWorld())
     {
         const auto GameMode = Cast<AKTAGameModeBase>(GetWorld()->GetAuthGameMode());
@@ -20,7 +23,11 @@ bool UKTAGOverWidget::Initialize()
             GameMode->OnMatchSatateChanged.AddUObject(this, &UKTAGOverWidget::OnMatchStateChanged);
         }
     }
-    return Super::Initialize();
+
+    if (ResetLevelButton)
+    {
+        ResetLevelButton->OnClicked.AddDynamic(this, &UKTAGOverWidget::OnResetLevel);
+    }
 }
 
 
@@ -68,4 +75,10 @@ void UKTAGOverWidget::UpdatePlayersState()
         
     }
     
+}
+
+void UKTAGOverWidget::OnResetLevel()
+{
+    const FString CurrentLevelName = UGameplayStatics::GetCurrentLevelName(this);
+    UGameplayStatics::OpenLevel(this, FName(CurrentLevelName));
 }

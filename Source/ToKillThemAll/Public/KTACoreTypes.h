@@ -108,7 +108,7 @@ struct FGameData
 };
 
 UENUM(BlueprintType)
-enum class EKTAMatchState: uint8
+enum class EKTAMatchState : uint8
 {
     WaitingToStart = 0,
     InProgress,
@@ -117,3 +117,20 @@ enum class EKTAMatchState: uint8
 };
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnMatchSatateChangedSignature, EKTAMatchState);
+
+USTRUCT(BlueprintType)
+struct FLevelData
+{
+    GENERATED_USTRUCT_BODY()
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    FName LevelName = NAME_None;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    FName LevelDisplayName = NAME_None;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Game")
+    UTexture2D *levelThumb;
+};
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnLevelSelectedSignature, const FLevelData&);

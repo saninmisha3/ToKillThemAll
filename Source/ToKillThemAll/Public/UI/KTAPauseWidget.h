@@ -16,13 +16,16 @@ class TOKILLTHEMALL_API UKTAPauseWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-    virtual bool Initialize() override;
+    
 
 protected:
     UPROPERTY(meta = (BindWidget))
     UButton *ClearPauseButton;
 
     private:
+
+    virtual void NativeOnInitialized() override;
+
     UFUNCTION()
     void OnClearPause();
 

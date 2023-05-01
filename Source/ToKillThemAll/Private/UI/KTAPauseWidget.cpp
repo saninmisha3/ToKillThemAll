@@ -4,15 +4,14 @@
 #include "Components/Button.h"
 #include "Gameframework/GameModeBase.h"
 
-bool UKTAPauseWidget::Initialize()
+void UKTAPauseWidget::NativeOnInitialized()
 {
-    const auto InitStatus = Super::Initialize();
+    Super::NativeOnInitialized();
     if (ClearPauseButton)
     {
         ClearPauseButton->OnClicked.AddDynamic(this, &UKTAPauseWidget::OnClearPause);
     }
 
-    return InitStatus;
 }
 
 void UKTAPauseWidget::OnClearPause()

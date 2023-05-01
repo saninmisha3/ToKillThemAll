@@ -5,14 +5,15 @@
 #include "Components/KTAWeaponComponent.h"
 #include "KTAUtils.h"
 
-bool UKTAPlayerHUDWidget::Initialize()
+void UKTAPlayerHUDWidget::NativeOnInitialized()
 {
+    Super::NativeOnInitialized();
     if (GetOwningPlayer())
     {
         GetOwningPlayer()->GetOnNewPawnNotifier().AddUObject(this, &UKTAPlayerHUDWidget::OnNewPawn);
         OnNewPawn(GetOwningPlayerPawn());
     }
-    return Super::Initialize();
+   
 }
 
 void UKTAPlayerHUDWidget::OnHealthChanged(float Health, float HealthDelta)
