@@ -8,7 +8,8 @@
 #include "KTAGameModeBase.h"
 #include "KTAGameHUD.generated.h"
 
-/**
+class UKTABaseWidget;
+    /**
  *
  */
 UCLASS()
@@ -33,11 +34,11 @@ class TOKILLTHEMALL_API AKTAGameHUD : public AHUD
 
   private:
     UPROPERTY()
-    TMap<EKTAMatchState, UUserWidget *> GameWidgets;
+    TMap<EKTAMatchState, UKTABaseWidget *> GameWidgets;
 
 
     UPROPERTY()
-    UUserWidget *CurrentWinget = nullptr;
+    UKTABaseWidget *CurrentWinget = nullptr;
 
         void DrawCrossHaie();
     void OnMatchStateChanged(EKTAMatchState State);

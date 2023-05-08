@@ -42,13 +42,15 @@ class TOKILLTHEMALL_API UKTALevelItemWidget : public UUserWidget
 
     virtual void NativeOnInitialized() override;
 
-    private:
+  private:
     FLevelData LevelData;
-
-
 
     UFUNCTION()
     void OnLevelitemClicked();
 
- 
+    UFUNCTION()
+    void OnLevelItemHovered();
+
+    UFUNCTION()
+    void OnLevelItemUpHovered();
 };

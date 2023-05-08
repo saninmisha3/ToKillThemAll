@@ -53,6 +53,7 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
 
     virtual void OnDeath();
 
+    virtual void OnHealthChanged(float Health, float HealthDelta);
   public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
@@ -68,8 +69,9 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
 
     void SetPlayerColor(const FLinearColor& Color);
 
+    
   private:
-    void OnHealthChanged(float Health, float HealthDelta);
+   
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult &Hit);

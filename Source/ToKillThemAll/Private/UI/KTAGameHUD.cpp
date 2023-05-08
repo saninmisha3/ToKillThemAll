@@ -1,6 +1,6 @@
 #include "UI/KTAGameHUD.h"
 #include "Engine/Canvas.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/KTABaseWidget.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogKTAGameHUD, All, All);
 
@@ -8,9 +8,9 @@ void AKTAGameHUD::BeginPlay()
 {
     Super::BeginPlay();
 
-    GameWidgets.Add(EKTAMatchState::InProgress, CreateWidget<UUserWidget>(GetWorld(), PlayerHUDWidgetClass));
-    GameWidgets.Add(EKTAMatchState::Pause, CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass));
-    GameWidgets.Add(EKTAMatchState::GameOver, CreateWidget<UUserWidget>(GetWorld(), GameOverWidgetClass));
+    GameWidgets.Add(EKTAMatchState::InProgress, CreateWidget<UKTABaseWidget>(GetWorld(), PlayerHUDWidgetClass));
+    GameWidgets.Add(EKTAMatchState::Pause, CreateWidget<UKTABaseWidget>(GetWorld(), PauseWidgetClass));
+    GameWidgets.Add(EKTAMatchState::GameOver, CreateWidget<UKTABaseWidget>(GetWorld(), GameOverWidgetClass));
 
     for (auto GameWidgetPair : GameWidgets)
     {
@@ -68,6 +68,7 @@ void AKTAGameHUD::OnMatchStateChanged(EKTAMatchState State)
     if (CurrentWinget)
     {
         CurrentWinget->SetVisibility(ESlateVisibility::Visible);
+        CurrentWinget->Show();
     }
 
 

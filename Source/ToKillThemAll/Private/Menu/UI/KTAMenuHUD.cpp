@@ -2,7 +2,7 @@
 
 
 #include "Menu/UI/KTAMenuHUD.h"
-#include "Blueprint/UserWidget.h"
+#include "UI/KTABaseWidget.h"
 
 void AKTAMenuHUD::BeginPlay()
 {
@@ -10,10 +10,11 @@ void AKTAMenuHUD::BeginPlay()
 
     if (MenuWidgetClass)
     {
-        const auto MenuWidget = CreateWidget<UUserWidget>(GetWorld(), MenuWidgetClass);
+        const auto MenuWidget = CreateWidget<UKTABaseWidget>(GetWorld(), MenuWidgetClass);
         if (MenuWidget)
         {
             MenuWidget->AddToViewport();
+            MenuWidget->Show();
         }
     }
 

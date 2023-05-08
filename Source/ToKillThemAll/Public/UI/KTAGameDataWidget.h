@@ -26,8 +26,7 @@ class TOKILLTHEMALL_API UKTAGameDataWidget : public UUserWidget
     UFUNCTION(BlueprintCallable, Category = "UI")
     int32 GetCurrentRound() const;
 
-    UFUNCTION(BlueprintCallable, Category = "UI")
-    int32 GetKillsNum() const;
+
 
   private:
     AKTAGameModeBase *GetKTAGameMode() const;

@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Blueprint/UserWidget.h"
+#include "UI/KTABaseWidget.h"
 #include "CoreMinimal.h"
 #include "KTACoreTypes.h"
 #include "KTAGOverWidget.generated.h"
@@ -13,7 +13,7 @@ class UButton;
  *
  */
 UCLASS()
-class TOKILLTHEMALL_API UKTAGOverWidget : public UUserWidget
+class TOKILLTHEMALL_API UKTAGOverWidget : public UKTABaseWidget
 {
     GENERATED_BODY()
 

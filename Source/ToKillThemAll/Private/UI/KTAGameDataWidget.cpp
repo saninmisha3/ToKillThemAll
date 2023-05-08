@@ -17,11 +17,7 @@ int32 UKTAGameDataWidget::GetCurrentRound() const
     return GameMode ? GameMode->GetCurrentRound() : 0;
 }
 
-int32 UKTAGameDataWidget::GetKillsNum() const
-{
-    const auto PlayerState = GetKTAPlayerState();
-    return PlayerState ? PlayerState->GetKillsNum() : 0;
-}
+
 
 AKTAGameModeBase *UKTAGameDataWidget::GetKTAGameMode() const
 {

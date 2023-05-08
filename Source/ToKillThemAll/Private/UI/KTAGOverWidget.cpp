@@ -69,7 +69,7 @@ void UKTAGOverWidget::UpdatePlayersState()
         PlayerStatRowWidget->SetDeath(KTAUtils::TextFromInt(PalyerState->GetDeathNum()));
         PlayerStatRowWidget->SetTeam(KTAUtils::TextFromInt(PalyerState->GetTeamID()));
         PlayerStatRowWidget->SetPlayerIndicatorVisibility(Controller->IsPlayerController());
-        
+        PlayerStatRowWidget->SetTeamColor(PalyerState->GetTeamColor());
         
         PlayerStatBox->AddChild(PlayerStatRowWidget);
         

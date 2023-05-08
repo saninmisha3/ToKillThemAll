@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Blueprint/UserWidget.h"
+#include "UI/KTABaseWidget.h"
 #include "CoreMinimal.h"
 #include "KTACoreTypes.h"
 #include "KTAMenuWidget.generated.h"
@@ -15,7 +15,7 @@ class UKTALevelItemWidget;
  *
  */
 UCLASS()
-class TOKILLTHEMALL_API UKTAMenuWidget : public UUserWidget
+class TOKILLTHEMALL_API UKTAMenuWidget : public UKTABaseWidget
 {
     GENERATED_BODY()
 

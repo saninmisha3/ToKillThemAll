@@ -39,3 +39,11 @@ void UKTAPlayerStatRowWidget::SetPlayerIndicatorVisibility(bool Visible)
     PlayerIndicatorImage->SetVisibility(Visible ? ESlateVisibility::Visible : ESlateVisibility::Hidden);
 
 }
+
+void UKTAPlayerStatRowWidget::SetTeamColor(const FLinearColor &Color)
+{
+    if (!TeamImage)
+        return;
+
+    TeamImage->SetColorAndOpacity(Color);
+}
