@@ -6,9 +6,9 @@
 #include "GameFramework/Character.h"
 #include "KTABaseCharacter.generated.h"
 
-
 class UKTAHealthComponent;
 class UKTAWeaponComponent;
+class USoundCue;
 
 UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
 {
@@ -19,8 +19,6 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     AKTABaseCharacter(const FObjectInitializer &ObjInt);
 
   protected:
-
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UKTAHealthComponent *HealthComponent;
 
@@ -42,6 +40,9 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     UPROPERTY(EditDefaultsOnly, Category = "Material")
     FName MaterialColorName = "Paint Color";
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *DeathSound;
+
     // UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     // USpringArmComponent *SpringArmComponent;
 
@@ -54,12 +55,12 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     virtual void OnDeath();
 
     virtual void OnHealthChanged(float Health, float HealthDelta);
+
   public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
 
     // Called to bind functionality to input
-    
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     virtual bool IsRunning() const;
@@ -67,14 +68,9 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
     UFUNCTION(BlueprintCallable, Category = "Movement")
     float GetMovementDirection() const;
 
-    void SetPlayerColor(const FLinearColor& Color);
+    void SetPlayerColor(const FLinearColor &Color);
 
-    
   private:
-   
-
     UFUNCTION()
     void OnGroundLanded(const FHitResult &Hit);
-
-
 };

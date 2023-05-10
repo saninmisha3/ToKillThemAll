@@ -7,6 +7,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/HorizontalBox.h"
 #include "Menu/UI/KTALevelItemWidget.h"
+#include "Sound/SoundCue.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogKTAMenuWidget, All, All);
 
@@ -25,6 +26,8 @@ void UKTAMenuWidget::NativeOnInitialized()
     }
     InitLevelItems();
 }
+
+
 
 void UKTAMenuWidget::InitLevelItems()
 {
@@ -79,13 +82,21 @@ void UKTAMenuWidget::OnLevelSelected(const FLevelData &Data)
     }
 }
 
-void UKTAMenuWidget::OnStartGame()
+void UKTAMenuWidget::OnAnimationFinished_Implementation(const UWidgetAnimation *Animation)
 {
+    if (Animation != HideAnimation)
+        return;
     const auto KTAGameInstance = GetKTAGameInstance();
     if (!KTAGameInstance)
         return;
 
     UGameplayStatics::OpenLevel(this, KTAGameInstance->GetStartupLevel().LevelName);
+}
+
+void UKTAMenuWidget::OnStartGame()
+{
+    PlayAnimation(HideAnimation);
+    UGameplayStatics::PlaySound2D(GetWorld(), StartgameSound);
 }
 
 void UKTAMenuWidget::OnQuitGame()

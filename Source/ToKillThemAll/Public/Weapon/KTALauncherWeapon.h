@@ -7,18 +7,22 @@
 #include "KTALauncherWeapon.generated.h"
 
 class AKTAProjectile;
+class USoundCue;
 
 UCLASS()
 class TOKILLTHEMALL_API AKTALauncherWeapon : public AKTABaseWeapon
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
   public:
     virtual void StartFire() override;
 
-    protected:
+  protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
     TSubclassOf<AKTAProjectile> ProjectileClass;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *NoAmmoSound;
 
     virtual void MakeShot() override;
 };

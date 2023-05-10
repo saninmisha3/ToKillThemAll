@@ -11,7 +11,7 @@
 class USkeletalMeshComponent;
 class UNiagaraSystem;
 class UNiagaraComponent;
-
+class USoundCue;
 
 UCLASS()
 class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
@@ -61,6 +61,10 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "VFX")
     UNiagaraSystem *MuzzleFX;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *FireSound;
+
     // Called when the game starts or when spawned
     virtual void BeginPlay() override;
 

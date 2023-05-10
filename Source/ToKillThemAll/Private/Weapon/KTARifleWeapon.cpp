@@ -1,12 +1,14 @@
 // Kill Them All Game, All Rights Reserved
 
-
 #include "Weapon/KTARifleWeapon.h"
+#include "Components/AudioComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/World.h"
-#include "Weapon/Components/KTAWeaponFXComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "Sound/SoundCue.h"
+#include "Weapon/Components/KTAWeaponFXComponent.h"
 
 AKTARifleWeapon::AKTARifleWeapon()
 {
@@ -23,7 +25,7 @@ void AKTARifleWeapon::BeginPlay()
 void AKTARifleWeapon::StartFire()
 {
     // UE_LOG(LogBaseWeapon, Display, TEXT("Fire!!!"));
-    InitMuzzleFX();
+    InitFX();
     GetWorldTimerManager().SetTimer(ShotTimerHandle, this, &AKTARifleWeapon::MakeShot, TimeBetweenShots, true);
     MakeShot();
 }
@@ -33,7 +35,7 @@ void AKTARifleWeapon::StopFire()
     // UE_LOG(LogBaseWeapon, Display, TEXT("Fire!!!"));
 
     GetWorldTimerManager().ClearTimer(ShotTimerHandle);
-    SetMuzzleFXVisibility(false);
+    SetFXActive(false);
 }
 
 void AKTARifleWeapon::MakeShot()
@@ -43,7 +45,6 @@ void AKTARifleWeapon::MakeShot()
         StopFire();
         return;
     }
-        
 
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -64,10 +65,10 @@ void AKTARifleWeapon::MakeShot()
     {
         TraceFXEnd = HitResult.ImpactPoint;
         MakeDamage(HitResult);
-                      WeaponFXComponent->PlayImpactFX(HitResult);
+        WeaponFXComponent->PlayImpactFX(HitResult);
         //
 
-        //UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
+        // UE_LOG(LogBaseWeapon, Display, TEXT("Bone: %s"), *HitResult.BoneName.ToString());
     }
 
     SpawnTraceFX(SocketTransform.GetLocation(), TraceFXEnd);
@@ -81,23 +82,33 @@ void AKTARifleWeapon::MakeDamage(const FHitResult &HitResult)
         return;
     DamagedActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
 }
-void AKTARifleWeapon::InitMuzzleFX()
+
+void AKTARifleWeapon::InitFX()
 {
     if (!MuzzleFXComponent)
     {
         MuzzleFXComponent = SpawnMuzzleFX();
     }
-    SetMuzzleFXVisibility(true);
+
+    if (!FireAudioComponent)
+    {
+        FireAudioComponent = UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
+    }
+    SetFXActive(true);
 }
 
-void AKTARifleWeapon::SetMuzzleFXVisibility(bool Visible)
+void AKTARifleWeapon::SetFXActive(bool IsActive)
 {
     if (MuzzleFXComponent)
     {
-        MuzzleFXComponent->SetPaused(!Visible);
-        MuzzleFXComponent->SetVisibility(Visible, true);
+        MuzzleFXComponent->SetPaused(!IsActive);
+        MuzzleFXComponent->SetVisibility(IsActive, true);
     }
 
+    if (FireAudioComponent)
+    {
+        IsActive ? FireAudioComponent->Play() : FireAudioComponent->Stop();
+    }
 }
 
 void AKTARifleWeapon::SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd)

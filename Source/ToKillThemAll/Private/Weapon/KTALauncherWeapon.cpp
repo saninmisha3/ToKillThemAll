@@ -3,6 +3,8 @@
 
 #include "Weapon/KTALauncherWeapon.h"
 #include "Weapon/KTAProjectile.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogLauncher, All, All);
 
@@ -13,12 +15,19 @@ void AKTALauncherWeapon::StartFire()
 
 void AKTALauncherWeapon::MakeShot()
 {
-    if (!GetWorld() || IsAmmoEmpty())
+    if (!GetWorld())
     {
         StopFire();
         return;
     }
-        
+    
+    if (IsAmmoEmpty())
+    {
+        StopFire();
+        UGameplayStatics::SpawnSoundAtLocation(GetWorld(), NoAmmoSound, GetActorLocation());
+
+        return;
+    }
 
     FVector ViewLocation;
     FRotator ViewRotation;
@@ -49,4 +58,5 @@ void AKTALauncherWeapon::MakeShot()
     }
     DecreaseAmmo();
     SpawnMuzzleFX();
+    UGameplayStatics::SpawnSoundAttached(FireSound, WeaponMesh, MuzzleSocketName);
 }

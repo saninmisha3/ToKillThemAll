@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "KTABaseWidget.generated.h"
 
+class USoundCue;
 /**
  *
  */
@@ -19,4 +20,7 @@ class TOKILLTHEMALL_API UKTABaseWidget : public UUserWidget
   protected:
     UPROPERTY(meta = (BindWidgetAnim), Transient)
     UWidgetAnimation *ShowAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue *OpenSound;
 };

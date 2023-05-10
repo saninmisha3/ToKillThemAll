@@ -10,7 +10,8 @@
 class UButton;
 class UHorizontalBox;
 class UKTAGameInstance;
-class UKTALevelItemWidget;
+class UKTALevelItemWidget;\
+class USoundCue;
 /**
  *
  */
@@ -32,8 +33,15 @@ class TOKILLTHEMALL_API UKTAMenuWidget : public UKTABaseWidget
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "UI")
     TSubclassOf<UUserWidget> LevelItemWidgetClass;
 
+    UPROPERTY(meta = (BindWidgetAnim), Transient)
+    UWidgetAnimation *HideAnimation;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+    USoundCue* StartgameSound;
+
     virtual void NativeOnInitialized() override;
 
+    virtual void OnAnimationFinished_Implementation(const UWidgetAnimation *Animation) override;
   private:
     UPROPERTY()
     TArray<UKTALevelItemWidget *> LevelItemWidgets;
