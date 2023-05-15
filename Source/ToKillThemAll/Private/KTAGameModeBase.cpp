@@ -82,8 +82,8 @@ void AKTAGameModeBase::StartRound()
 
 void AKTAGameModeBase::GetTimerUpdate()
 {
-    UE_LOG(LogKTAGameModeBase, Display, TEXT("Time: %i / Round %i/%i"), RoundCountDown, CurrentRound,
-           GameData.RoundsNum);
+   // UE_LOG(LogKTAGameModeBase, Display, TEXT("Time: %i / Round %i/%i"), RoundCountDown, CurrentRound,
+     //      GameData.RoundsNum);
 
     if (--RoundCountDown == 0)
     {

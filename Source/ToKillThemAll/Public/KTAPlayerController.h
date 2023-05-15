@@ -29,4 +29,5 @@ class TOKILLTHEMALL_API AKTAPlayerController : public APlayerController
   private:
     void OnPauseDame();
     void OnMatchStateChanged(EKTAMatchState State);
+    void OnMuteSound();
 };

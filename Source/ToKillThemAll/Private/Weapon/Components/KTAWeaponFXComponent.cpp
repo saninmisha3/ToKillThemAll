@@ -3,6 +3,7 @@
 #include "Weapon/Components/KTAWeaponFXComponent.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "NiagaraFunctionLibrary.h"
 #include "PhysicalMaterials/PhysicalMaterial.h"
 
@@ -45,4 +46,7 @@ void UKTAWeaponFXComponent::PlayImpactFX(const FHitResult &Hit)
         DecalComponent->SetFadeOut(ImpactData.DecalData.LifeTime, ImpactData.DecalData.FadeOutTime);
     
     }
+
+    //sound
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), ImpactData.Sound, Hit.ImpactPoint);
 }

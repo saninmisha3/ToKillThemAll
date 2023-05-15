@@ -1,23 +1,23 @@
 // Kill Them All Game, All Rights Reserved
 
-
 #include "KTAPlayerController.h"
 #include "Components/KTARespawnComponent.h"
+#include "KTAGameInstance.h"
 #include "KTAGameModeBase.h"
-
 
 AKTAPlayerController::AKTAPlayerController()
 {
     RespawnComponent = CreateDefaultSubobject<UKTARespawnComponent>("RespawnComponent");
 }
 
-void AKTAPlayerController::SetupInputComponent() 
+void AKTAPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
     if (!InputComponent)
         return;
 
     InputComponent->BindAction("PauseGame", IE_Pressed, this, &AKTAPlayerController::OnPauseDame);
+    InputComponent->BindAction("Mute", IE_Pressed, this, &AKTAPlayerController::OnMuteSound);
 }
 
 void AKTAPlayerController::OnPauseDame()
@@ -54,4 +54,16 @@ void AKTAPlayerController::OnMatchStateChanged(EKTAMatchState State)
         SetInputMode(FInputModeUIOnly());
         bShowMouseCursor = true;
     }
+}
+
+void AKTAPlayerController::OnMuteSound()
+{
+    if (!GetWorld())
+        return;
+
+    const auto KTAGameInstance = GetWorld()->GetGameInstance<UKTAGameInstance>();
+    if (!KTAGameInstance)
+        return;
+
+    KTAGameInstance->ToggleVolume();
 }

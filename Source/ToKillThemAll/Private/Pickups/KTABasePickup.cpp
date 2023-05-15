@@ -2,6 +2,8 @@
 
 #include "Pickups/KTABasePickup.h"
 #include "Components/SphereComponent.h"
+#include "Sound/SoundCue.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogPickupComponent, All, All);
 
@@ -53,7 +55,8 @@ void AKTABasePickup::PickupWasTaken()
     if (GetRootComponent())
         GetRootComponent()->SetVisibility(false, true);
 
-    
+    UGameplayStatics::SpawnSoundAtLocation(GetWorld(), PickupSound, GetActorLocation());
+
     GetWorldTimerManager().SetTimer(RespawnTimerHandle, this, &AKTABasePickup::Respawn, RespawnTime);
 }
 

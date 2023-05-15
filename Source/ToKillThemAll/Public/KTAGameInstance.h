@@ -7,6 +7,7 @@
 #include "KTACoreTypes.h"
 #include "KTAGameInstance.generated.h"
 
+class USoundClass;
 /**
  *
  */
@@ -33,6 +34,8 @@ class TOKILLTHEMALL_API UKTAGameInstance : public UGameInstance
         return MenuLevelName;
     }
 
+    void ToggleVolume();
+
   protected:
     UPROPERTY(EditDefaultsOnly, Category = "Game", meta = (ToolTip = "Level names must be unique"))
     TArray<FLevelData> LevelsData;
@@ -40,6 +43,8 @@ class TOKILLTHEMALL_API UKTAGameInstance : public UGameInstance
     UPROPERTY(EditDefaultsOnly, Category = "Game")
     FName MenuLevelName = NAME_None;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Sound")
+    USoundClass *MasterSoundClass;
   private:
     FLevelData StartupLevel;
 };
