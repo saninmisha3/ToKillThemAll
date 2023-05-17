@@ -38,6 +38,20 @@ void AKTARifleWeapon::StopFire()
     SetFXActive(false);
 }
 
+void AKTARifleWeapon::Zoom(bool Enabled)
+{
+    const auto Controller = Cast<APlayerController>(GetPlayerController());
+    if (!Controller || !Controller->PlayerCameraManager)
+        return;
+
+    if (Enabled)
+    {
+        DefaultCameraFOV = Controller->PlayerCameraManager->GetFOVAngle();
+    }
+
+    Controller->PlayerCameraManager->SetFOV(Enabled ? FOVZoomAngle : DefaultCameraFOV);
+}
+
 void AKTARifleWeapon::MakeShot()
 {
     if (!GetWorld() || IsAmmoEmpty())
@@ -80,7 +94,10 @@ void AKTARifleWeapon::MakeDamage(const FHitResult &HitResult)
     const auto DamagedActor = HitResult.GetActor();
     if (!DamagedActor)
         return;
-    DamagedActor->TakeDamage(DamageAmount, FDamageEvent{}, GetPlayerController(), this);
+
+    FPointDamageEvent PointDamageEvent;
+    PointDamageEvent.HitInfo = HitResult;
+    DamagedActor->TakeDamage(DamageAmount, PointDamageEvent, GetPlayerController(), this);
 }
 
 void AKTARifleWeapon::InitFX()

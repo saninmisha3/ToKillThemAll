@@ -3,6 +3,7 @@
 #include "KTAGameModeBase.h"
 #include "AI/KTAAIController.h"
 #include "Components/KTARespawnComponent.h"
+#include "Components/KTAWeaponComponent.h"
 #include "EngineUtils.h"
 #include "KTABaseCharacter.h"
 #include "KTAPlayerController.h"
@@ -237,14 +238,28 @@ void AKTAGameModeBase::SetMatchState(EKTAMatchState State)
     OnMatchSatateChanged.Broadcast(MatchState);
 }
 
+void AKTAGameModeBase::StopAllFire()
+{
+    for (auto Pawn : TActorRange<APawn>(GetWorld()))
+    {
+        const auto WeaponComponent = KTAUtils::GetKTAPlayerComponent<UKTAWeaponComponent>(Pawn);
+        if (!WeaponComponent)
+            continue;
+
+        WeaponComponent->StopFire();
+        WeaponComponent->Zoom(false);
+    }
+}
+
 bool AKTAGameModeBase::SetPause(APlayerController *PC, FCanUnpause CanUnpauseDelegate)
 {
     const bool PauseSet = Super::SetPause(PC, CanUnpauseDelegate);
     if (PauseSet)
     {
+        StopAllFire();
         SetMatchState(EKTAMatchState::Pause);
+        
     }
-
     return PauseSet;
 }
 

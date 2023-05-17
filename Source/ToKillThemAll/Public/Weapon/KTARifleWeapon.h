@@ -6,7 +6,6 @@
 #include "Weapon/KTABaseWeapon.h"
 #include "KTARifleWeapon.generated.h"
 
-
 class UKTAWeaponFXComponent;
 class UNiagaraComponent;
 class UNiagaraSystem;
@@ -24,6 +23,8 @@ class TOKILLTHEMALL_API AKTARifleWeapon : public AKTABaseWeapon
 
     virtual void StartFire() override;
     virtual void StopFire() override;
+
+    virtual void Zoom(bool Enabled) override;
 
   protected:
     virtual void BeginPlay() override;
@@ -47,6 +48,9 @@ class TOKILLTHEMALL_API AKTARifleWeapon : public AKTABaseWeapon
     UPROPERTY(VisibleAnywhere, Category = "VFX")
     UKTAWeaponFXComponent *WeaponFXComponent;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Weapon")
+    float FOVZoomAngle = 50.0f;
+
   private:
     FTimerHandle ShotTimerHandle;
 
@@ -60,4 +64,6 @@ class TOKILLTHEMALL_API AKTARifleWeapon : public AKTABaseWeapon
     void InitFX();
     void SetFXActive(bool IsActive);
     void SpawnTraceFX(const FVector &TraceStart, const FVector &TraceEnd);
+
+    float DefaultCameraFOV = 90.0f;
 };

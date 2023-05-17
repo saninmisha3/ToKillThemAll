@@ -54,6 +54,12 @@ void AKTAPlayerCharacter::SetupPlayerInputComponent(UInputComponent *PlayerInput
     PlayerInputComponent->BindAction("Fire", IE_Released, WeaponComponent, &UKTAWeaponComponent::StopFire);
     PlayerInputComponent->BindAction("NextWeapon", IE_Released, WeaponComponent, &UKTAWeaponComponent::NextWeapon);
     PlayerInputComponent->BindAction("Reload", IE_Released, WeaponComponent, &UKTAWeaponComponent::Reload);
+
+    DECLARE_DELEGATE_OneParam(FZoomInputSignature, bool);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Pressed, WeaponComponent,
+                                                          &UKTAWeaponComponent::Zoom, true);
+    PlayerInputComponent->BindAction<FZoomInputSignature>("Zoom", IE_Released, WeaponComponent,
+                                                          &UKTAWeaponComponent::Zoom,false);
 }
 
 void AKTAPlayerCharacter::MoveForward(float Amount)

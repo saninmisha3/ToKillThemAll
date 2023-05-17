@@ -83,4 +83,6 @@ public:
     void GameOver();
 
     void SetMatchState(EKTAMatchState State);
+
+    void StopAllFire();
 };

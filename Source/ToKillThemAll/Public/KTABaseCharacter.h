@@ -59,7 +59,8 @@ UCLASS() class TOKILLTHEMALL_API AKTABaseCharacter : public ACharacter
   public:
     // Called every frame
     virtual void Tick(float DeltaTime) override;
-
+    virtual void TurnOff() override;
+    virtual void Reset() override;
     // Called to bind functionality to input
 
     UFUNCTION(BlueprintCallable, Category = "Movement")

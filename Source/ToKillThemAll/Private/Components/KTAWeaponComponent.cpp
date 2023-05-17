@@ -97,6 +97,7 @@ void UKTAWeaponComponent::EquipWeapon(int32 WeaponIndex)
     if (CurrentWeapon)
     {
         CurrentWeapon->StopFire();
+        CurrentWeapon->Zoom(false);
         AttachWeaponToSocket(CurrentWeapon, Character->GetMesh(), WeaponArmorySocketName);
     }
 
@@ -273,4 +274,12 @@ bool UKTAWeaponComponent::NeedAmmo(TSubclassOf<AKTABaseWeapon> WeaponType)
         }
     }
     return false;
+}
+
+void UKTAWeaponComponent::Zoom(bool Enabled)
+{
+    if (CurrentWeapon)
+    {
+        CurrentWeapon->Zoom(Enabled);
+    }
 }

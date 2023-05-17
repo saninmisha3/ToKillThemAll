@@ -53,6 +53,20 @@ void AKTABaseCharacter::Tick(float DeltaTime)
     // TakeDamage(0.1f, FDamageEvent{}, Controller, this);
 }
 
+void AKTABaseCharacter::TurnOff()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+    Super::TurnOff();
+}
+
+void AKTABaseCharacter::Reset()
+{
+    WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
+    Super::Reset();
+}
+
 // Called to bind functionality to input
 
 
@@ -96,6 +110,7 @@ void AKTABaseCharacter::OnDeath()
     if (!WeaponComponent)
         return;
     WeaponComponent->StopFire();
+    WeaponComponent->Zoom(false);
 
     GetMesh()->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
     GetMesh()->SetSimulatePhysics(true);

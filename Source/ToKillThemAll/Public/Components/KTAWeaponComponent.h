@@ -29,6 +29,7 @@ class TOKILLTHEMALL_API UKTAWeaponComponent : public UActorComponent
     bool TryToAddAmmo(TSubclassOf<AKTABaseWeapon> WeaponType, int32 ClipsAmount);
     bool NeedAmmo(TSubclassOf<AKTABaseWeapon> WeaponType);
 
+    void Zoom(bool Enabled);
   protected:
     // Called when the game starts
     virtual void BeginPlay() override;

@@ -43,6 +43,9 @@ class TOKILLTHEMALL_API AKTABaseWeapon : public AActor
     bool IsAmmoEmpty() const;
     bool IsAmmoFull() const;
 
+    virtual void Zoom(bool Enabled)
+    {}
+
   protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USkeletalMeshComponent *WeaponMesh;

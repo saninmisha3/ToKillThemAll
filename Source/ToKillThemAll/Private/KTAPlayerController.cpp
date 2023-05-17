@@ -34,8 +34,8 @@ void AKTAPlayerController::BeginPlay()
 
     if (GetWorld())
     {
-        const auto GameMode = Cast<AKTAGameModeBase>(GetWorld()->GetAuthGameMode());
-        if (GameMode)
+        
+        if (const auto GameMode = Cast<AKTAGameModeBase>(GetWorld()->GetAuthGameMode()))
         {
             GameMode->OnMatchSatateChanged.AddUObject(this, &AKTAPlayerController::OnMatchStateChanged);
         }
